@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Harry Poppers - Authentic UK-Made Poppers{% endblock %}</title>
+    <link rel="icon" href="{% static 'assets/img/2.png' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/swiper.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/jquery.fancybox.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/font/flaticon_mycollection.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Harry Poppers - Authentic UK-made products. We offer fresh and high-quality poppers with discreet packaging. Freebies with every order.">
+    <meta name="keywords" content="Harry Poppers, Poppers, Authentic Poppers, UK-made Poppers, Cheap Poppers, Fresh Poppers, Philippines, Poppers for sale">
+    <meta name="author" content="Harry Poppers">
+    <meta name="robots" content="index, follow">
+</head>
+<style>
+
+
+    /* Styling for the logo container */
+.logo {
+    max-width: 100px; /* Restrict maximum width of the logo container */
+    max-height: 80px; /* Restrict maximum height */
+    overflow: hidden; /* Hide overflowing parts of the image if necessary */
+}
+
+/* Styling for the logo image */
+.logo img {
+    width: 100%; /* Make the image responsive */
+    height: auto; /* Maintain the image's aspect ratio */
+    display: block; /* Remove inline padding or margins */
+    object-fit: contain; /* Ensure the entire logo is visible */
+}
+</style>
+
+<body class="two">
+    <div class="preloader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Section -->
+    <header id="stickyHeader">
+        <div class="container">
+            <div class="top-bar">
+                <div class="logo">
+                    <a href="#">
+                        <img alt="Harry Poppers Logo" src="{% static 'assets/img/harrypoppers_logo.png' %}">
+                    </a>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#updates">Updates</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="login">
+                    <h4>PH.<a href="tel:+639163781604">+63 916 378 1604</a></h4>
+                    <a href="#" class="btn"><span>Start free trial</span></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <!-- Footer Section -->
+    <footer class="gap no-bottom" style="background-image: url({% static 'assets/img/lins-img-2.png' %});">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="heading two">
+                        <h4>Special features or updates are <span>waiting for you!</span></h4>
+                        <p>Get recent news and features updates notification.</p>
+                    </div>
+                    <form role="form" class="get-subscriber" id="subscribe-form" method="post">
+                        {% csrf_token %}
+                        <input type="email" name="email" placeholder="Enter your email" required="">
+                        <button type="submit" class="btn bk">Subscribe</button>
+                    </form>
+                    <div class="footer-text">
+                        <h4>Ph: <a href="tel:+639163781604">+63 916 378 1604</a> </h4>
+                        <h4>Em: <a href="mailto:poppersmanilabybert@gmail.com">poppersmanilabybert@gmail.com</a> </h4>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6">
+                    <div class="useful-link">
+                        <h3>Useful Links</h3>
+                        <ul>
+                            <li><a href="#">Documents</a></li>
+                            <li><a href="#">Products</a></li>
+                            <li><a href="#">Shop</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Gallery</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6">
+                    <div class="useful-link">
+                        <h3>Categories</h3>
+                        <ul>
+                            <li><a href="#">Multi-Rotor Drones</a></li>
+                            <li><a href="#">Fixed-Wing Drones</a></li>
+                            <li><a href="#">Rotor Drones</a></li>
+                            <li><a href="#">Wing Drones</a></li>
+                            <li><a href="#">Airworthiness</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6">
+                    <div class="useful-link">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Designer Resources</a></li>
+                            <li><a href="#">Featured Partners</a></li>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms and Conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="copy-right">
+                <p>© 2024 Harry Poppers. All Rights Reserved.</p>
+                <ul class="social-icon">
+                    <li><a href="#"><i class="fa-brands fa-facebook"></i></a></li>
+                    <li><a href="#"><i class="flaticon-twitter"></i></a></li>
+                    <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <div id="scroll-percentage"><span id="scroll-percentage-value"></span></div>
+
+    <!-- JavaScript Files -->
+    <script src="{% static 'assets/js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/swiper.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+    <script src="{% static 'assets/js/sweetalert.min.js' %}"></script>
+    <script src="{% static 'assets/js/contact.js' %}"></script>
+</body>
+
+</html>
