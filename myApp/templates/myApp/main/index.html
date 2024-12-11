@@ -5,86 +5,55 @@
 {% block content %}
 {% load static %}
   <!-- Hero Section -->
+  
   <section class="hero-section two">
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
                 <div class="hero-text">
-                    <span>Authentic European made Poppers</span>
-                    <h1><span>Harry Poppers</span> - Premium Quality</h1>
-                    <p>Get fresh, high-quality poppers delivered straight to your door with discreet packaging. Best prices and premium products since 2017!</p>
+                    <span>{{ hero_section.subtitle|default:"Default Subtitle" }}</span>
+                    <h1><span>{{ hero_section.title|default:"Default Title" }}</span></h1>
+                    <p>{{ hero_section.description|default:"Default description text" }}</p>
                     <div class="btnvideo">
-                        <a href="https://www.example.com/shop" class="btn">Shop Now</a>
-                        <div class="google-star">
-                            <div>
-                                <img src="assets/img/google.png" alt="Google Reviews">
-                                <ul class="stars">
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li><i class="fa-solid fa-star"></i></li>
-                                    <li>(5.0)</li>
-                                </ul>
-                            </div>
-                        </div>
+                        <a href="{{ hero_section.button_url|default:'#' }}" class="btn">
+                            {{ hero_section.button_text|default:"Shop Now" }}
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="hero-img">
-                    <img src="https://placehold.co/627x717" alt="Harry Poppers Premium Poppers">
+                    <img src="{{ hero_section.image.url|default:'https://placehold.co/627x717' }}" alt="Default Image">
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+
 <section id="services">
-    <div class="container">
-        <div class="heading">
-            <span>Authentic Poppers</span>
-            <h2>Harry Poppers <span>Premium Quality</span> Fast Delivery Nationwide</h2>
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-sm-6">
-                <div class="smartwatch hover-img-two">
-                    <figure class="imgg">
-                        <img src="https://placehold.co/306x306" alt="10ml Poppers">
-                        <img src="https://placehold.co/306x306" alt="10ml Poppers">
-                    </figure>
-                    <a href="#">10ml - ₱950</a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="smartwatch hover-img-two">
-                    <figure class="imgg">
-                        <img src="https://placehold.co/306x306" alt="15ml Poppers">
-                        <img src="https://placehold.co/306x306" alt="15ml Poppers">
-                    </figure>
-                    <a href="#">15ml - ₱1150</a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="smartwatch hover-img-two">
-                    <figure class="imgg">
-                        <img src="https://placehold.co/306x306" alt="20ml Poppers">
-                        <img src="https://placehold.co/306x306" alt="20ml Poppers">
-                    </figure>
-                    <a href="#">20ml - ₱1250</a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="smartwatch hover-img-two">
-                    <figure class="imgg">
-                        <img src="https://placehold.co/306x306" alt="Premium Poppers">
-                        <img src="https://placehold.co/306x306" alt="Premium Poppers">
-                    </figure>
-                    <a href="#">Premium Poppers - ₱2000+</a>
-                </div>
+  <div class="container">
+      <div class="heading">
+          <span>Authentic Poppers</span>
+          <h2>Harry Poppers <span>Premium Quality</span> Fast Delivery Nationwide</h2>
+      </div>
+      <div class="row">
+        {% for service in services %}
+        <div class="col-lg-3 col-sm-6">
+            <div class="smartwatch hover-img-two">
+                <figure class="imgg">
+                    <img src="{{ service.image.url }}" alt="{{ service.alt_text }}">
+                    <img src="{{ service.image.url }}" alt="{{ service.alt_text }}">
+                </figure>
+                <a href="{{ service.link }}">{{ service.name }} - ₱{{ service.price|floatformat:0 }}</a>
             </div>
         </div>
+        {% empty %}
+        <p>No services available at the moment.</p>
+        {% endfor %}
     </div>
+    
+  </div>
 </section>
 
 <section id="about" class="gap">

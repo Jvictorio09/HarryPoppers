@@ -1,0 +1,75 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block title %}Custom Admin Dashboard{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    h1, h2 {
+        margin-bottom: 20px;
+    }
+    form {
+        margin-bottom: 40px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    table th, table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+    }
+    img {
+        max-width: 100px;
+        height: auto;
+    }
+</style>
+
+<h1>Custom Admin Dashboard</h1>
+
+<!-- Hero Section Form -->
+<h2>Hero Section</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="update_hero" value="true">
+    <label>Title:</label>
+    <input type="text" name="title" value="{{ hero_section.title }}">
+    <label>Subtitle:</label>
+    <input type="text" name="subtitle" value="{{ hero_section.subtitle }}">
+    <label>Description:</label>
+    <textarea name="description">{{ hero_section.description }}</textarea>
+    <label>Image:</label>
+    <input type="file" name="image">
+    <button type="submit">Update Hero Section</button>
+</form>
+
+<!-- Services Section -->
+<h2>Services</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for service in services %}
+        <tr>
+            <td>{{ service.name }}</td>
+            <td>₱{{ service.price }}</td>
+            <td><img src="{{ service.image.url }}" alt="{{ service.name }}" width="100"></td>
+            <td>
+                <a href="{% url 'admin:myApp_service_change' service.id %}">Edit</a>
+                <a href="{% url 'admin:myApp_service_delete' service.id %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'admin:myApp_service_add' %}" class="btn">Add New Service</a>
+{% endblock %}

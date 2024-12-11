@@ -1,0 +1,8 @@
+{% block content %}
+<h1>Welcome to the Admin Dashboard</h1>
+<p>Testing: If you see this, the custom template is loaded!</p>
+<p>
+    <a href="{% url 'admin_landing_page' %}">Go to Custom Admin Dashboard</a>
+</p>
+{{ block.super }}
+{% endblock %}
