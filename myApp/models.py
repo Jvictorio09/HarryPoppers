@@ -57,3 +57,55 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
+
+
+from django.db import models
+
+class AboutSection(models.Model):
+    heading = models.CharField(max_length=200, help_text="Heading for the about section")
+    subheading = models.CharField(max_length=200, help_text="Subheading text")
+    description1 = models.TextField(help_text="First description paragraph")
+    description2 = models.TextField(help_text="Second description paragraph")
+    description3 = models.TextField(help_text="Third description paragraph")
+    image1 = models.ImageField(upload_to='about_images/', help_text="First image")
+    image2 = models.ImageField(upload_to='about_images/', help_text="Second image")
+    image3 = models.ImageField(upload_to='about_images/', help_text="Third image")
+
+    def __str__(self):
+        return self.heading
+
+
+from django.db import models
+
+class BenefitsSection(models.Model):
+    heading = models.CharField(max_length=200, help_text="Main heading for the benefits section")
+    subheading = models.CharField(max_length=200, help_text="Subheading for the section")
+    description = models.TextField(help_text="Brief description of the benefits")
+    benefit_1 = models.CharField(max_length=200, help_text="First benefit")
+    benefit_2 = models.CharField(max_length=200, help_text="Second benefit")
+    benefit_3 = models.CharField(max_length=200, help_text="Third benefit")
+    benefit_4 = models.CharField(max_length=200, help_text="Fourth benefit")
+    image = models.ImageField(upload_to='benefits_images/', help_text="Image for the benefits section")
+
+    def __str__(self):
+        return self.heading
+
+
+from django.db import models
+
+class ContactImage(models.Model):
+    image = models.ImageField(upload_to='contact_images/', help_text="Image for the Contact section")
+    alt_text = models.CharField(max_length=150, help_text="Alt text for the image")
+
+    def __str__(self):
+        return self.alt_text or "Contact Image"
+
+
+from django.db import models
+
+class ContactImage(models.Model):
+    image = models.ImageField(upload_to='contact_images/', help_text="Image for the Contact section")
+    alt_text = models.CharField(max_length=150, help_text="Alt text for the image")
+
+    def __str__(self):
+        return self.alt_text or "Contact Image"

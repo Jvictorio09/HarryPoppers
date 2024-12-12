@@ -1,40 +1,37 @@
- .smartwatch {
-     position: relative;
+.smartwatch {
+    position: relative;
 
-     @include respond-to("lg") {
-         margin-bottom: 20px;
-     }
+    a {
+        color: #000000;
+        position: absolute;
+        bottom: 6px;
+        z-index: 1;
+        left: 50%;
+        font-size: 22px;
+        font-weight: bold;
+        transform: translate(-50%, -50%);
+        width: max-content;
+        text-transform: capitalize;
+        opacity: 0; /* Hidden by default */
+        transition: opacity 0.3s ease, transform 0.3s ease;
 
-     a {
-         color: #fff;
-         position: absolute;
-         bottom: 6px;
-         z-index: 1;
-         left: 50%;
-         font-size: 22px;
-         font-weight: bold;
-         transform: translate(-50%, -50%);
-         width: max-content;
-         text-transform: capitalize;
-         @include transition;
+        &:hover {
+            color: $theme2-colour;
+        }
 
-         &:hover {
-             color: $theme2-colour;
-         }
+        &.in-view {
+            opacity: 1; /* Make visible on scroll */
+            transform: translate(-50%, 0); /* Adjust position slightly */
+        }
+    }
 
-         @include respond-to("xxl") {
-             font-size: 20px;
-         }
+    img {
+        @include respond-to("xxl") {
+            width: 100%;
+        }
 
-         @include respond-to("xl") {
-             font-size: 18px;
-         }
-     }
-
-     img {
-         @include respond-to("xxl") {
-             width: 100%;
-         }
-     }
-
- }
+        @media (max-width: 576px) {
+            width: 80%; /* Reduce image size for mobile */
+        }
+    }
+}

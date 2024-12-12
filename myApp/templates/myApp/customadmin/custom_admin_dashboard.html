@@ -46,6 +46,30 @@
     <button type="submit">Update Hero Section</button>
 </form>
 
+<!-- About Section Form -->
+<h2>About Section</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="update_about" value="true">
+    <label>Heading:</label>
+    <input type="text" name="heading" value="{{ about_section.heading }}">
+    <label>Subheading:</label>
+    <input type="text" name="subheading" value="{{ about_section.subheading }}">
+    <label>Description 1:</label>
+    <textarea name="description1">{{ about_section.description1 }}</textarea>
+    <label>Description 2:</label>
+    <textarea name="description2">{{ about_section.description2 }}</textarea>
+    <label>Description 3:</label>
+    <textarea name="description3">{{ about_section.description3 }}</textarea>
+    <label>Image 1:</label>
+    <input type="file" name="image1">
+    <label>Image 2:</label>
+    <input type="file" name="image2">
+    <label>Image 3:</label>
+    <input type="file" name="image3">
+    <button type="submit">Update About Section</button>
+</form>
+
 <!-- Services Section -->
 <h2>Services</h2>
 <table>
@@ -72,4 +96,69 @@
     </tbody>
 </table>
 <a href="{% url 'admin:myApp_service_add' %}" class="btn">Add New Service</a>
+
+
+
+<!-- Benefits Section Form -->
+<h2>Benefits Section</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="update_benefits" value="true">
+    <label>Heading:</label>
+    <input type="text" name="heading" value="{{ benefits_section.heading }}">
+    <label>Subheading:</label>
+    <input type="text" name="subheading" value="{{ benefits_section.subheading }}">
+    <label>Description:</label>
+    <textarea name="description">{{ benefits_section.description }}</textarea>
+    <label>Benefit 1:</label>
+    <input type="text" name="benefit_1" value="{{ benefits_section.benefit_1 }}">
+    <label>Benefit 2:</label>
+    <input type="text" name="benefit_2" value="{{ benefits_section.benefit_2 }}">
+    <label>Benefit 3:</label>
+    <input type="text" name="benefit_3" value="{{ benefits_section.benefit_3 }}">
+    <label>Benefit 4:</label>
+    <input type="text" name="benefit_4" value="{{ benefits_section.benefit_4 }}">
+    <label>Image:</label>
+    <input type="file" name="image">
+    <button type="submit">Update Benefits Section</button>
+</form>
+
+
+
+<h2>Contact Section Images</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="update_contact_images" value="true">
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Alt Text</th>
+                <th>New Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for image in contact_images %}
+            <tr>
+                <td><img src="{{ image.image.url }}" alt="{{ image.alt_text }}" width="100"></td>
+                <td>
+                    <input type="hidden" name="image_ids" value="{{ image.id }}">
+                    <input type="text" name="alt_text_{{ image.id }}" value="{{ image.alt_text }}">
+                </td>
+                <td>
+                    <input type="file" name="image_{{ image.id }}">
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No contact images available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit">Update Contact Images</button>
+    <a href="{% url 'admin:myApp_contactimage_add' %}" class="btn btn-primary">Add New Contact Image</a>
+</form>
+
+
 {% endblock %}

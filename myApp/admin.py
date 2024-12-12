@@ -12,6 +12,27 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = ('name', 'price')
 
 
+from .models import AboutSection
+
+@admin.register(AboutSection)
+class AboutSectionAdmin(admin.ModelAdmin):
+    list_display = ('heading', 'subheading')
+
+
+from .models import BenefitsSection
+
+@admin.register(BenefitsSection)
+class BenefitsSectionAdmin(admin.ModelAdmin):
+    list_display = ('heading', 'subheading')
+
+
+from .models import ContactImage
+
+@admin.register(ContactImage)
+class ContactImageAdmin(admin.ModelAdmin):
+    list_display = ('alt_text',)
+
+
 
 from django.urls import reverse
 from django.utils.html import format_html

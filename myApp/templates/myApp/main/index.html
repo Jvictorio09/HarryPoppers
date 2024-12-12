@@ -4,6 +4,45 @@
 
 {% block content %}
 {% load static %}
+<style>
+#services .smartwatch a {
+    color: black;
+    text-shadow: -1px -1px 0 white, /* Top-left outline */
+                 1px -1px 0 white,  /* Top-right outline */
+                 -1px 1px 0 white,  /* Bottom-left outline */
+                 1px 1px 0 white;   /* Bottom-right outline */
+    font-weight: bold; /* Optional: Make the text bolder for better readability */
+}
+
+  @media (max-width: 576px) {
+    #services .smartwatch {
+        padding: 8px;
+        display: flex; /* Enable flexbox */
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center items horizontally */
+        justify-content: center; /* Center items vertically */
+        text-align: center; /* Ensure text is centered */
+    }
+
+    #services .smartwatch img {
+        max-width: 120px; /* Smaller image size for mobile */
+        margin-bottom: 10px; /* Add spacing below the image */
+    }
+
+    #services .smartwatch a {
+        font-size: 14px;
+    }
+}
+
+.hidden {
+    display: none; /* Initially hide extra products */
+}
+
+#see-more-btn {
+    cursor: pointer;
+    margin-top: 20px;
+}
+</style>
   <!-- Hero Section -->
   
   <section class="hero-section two">
@@ -33,13 +72,13 @@
 
 <section id="services">
   <div class="container">
-      <div class="heading">
+      <div class="heading text-center">
           <span>Authentic Poppers</span>
           <h2>Harry Poppers <span>Premium Quality</span> Fast Delivery Nationwide</h2>
       </div>
       <div class="row">
         {% for service in services %}
-        <div class="col-lg-3 col-sm-6">
+        <div class="col-lg-3 col-sm-6 product-item {% if forloop.counter > 4 %}hidden{% endif %}">
             <div class="smartwatch hover-img-two">
                 <figure class="imgg">
                     <img src="{{ service.image.url }}" alt="{{ service.alt_text }}">
@@ -49,186 +88,171 @@
             </div>
         </div>
         {% empty %}
-        <p>No services available at the moment.</p>
+        <p class="text-center">No services available at the moment.</p>
         {% endfor %}
-    </div>
-    
+      </div>
+      {% if services|length > 4 %}
+      <div class="text-center mt-3">
+          <button id="see-more-btn" class="btn btn-primary">See More</button>
+      </div>
+      {% endif %}
   </div>
 </section>
 
+
 <section id="about" class="gap">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="about-img-two">
-                    <img src="https://placehold.co/334x316" class="about1" alt="Harry Poppers">
-                    <img src="https://placehold.co/306x288" class="about2" alt="Premium Poppers">
-                    <img src="https://placehold.co/333x316" class="about3" alt="Harry Poppers Products">
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="heading two">
-                    <span>About Harry Poppers</span>
-                    <h2>Your Trusted Source for <span>Authentic Poppers</span></h2>
-                </div>
-                <div class="ultra">
-                    <div><i class="flaticon-voice-bot"></i></div>
-                    <div>
-                        <h3>100% Authentic Products</h3>
-                        <p>We offer only original, European made poppers that guarantee freshness and quality.</p>
-                    </div>
-                </div>
-                <div class="ultra">
-                    <div><i class="flaticon-user-experience"></i></div>
-                    <div>
-                        <h3>Fast Nationwide Delivery</h3>
-                        <p>Enjoy discreet and quick delivery anywhere in the Philippines via trusted courier services like LBC, Grab, and Lalamove.</p>
-                    </div>
-                </div>
-                <div class="ultra">
-                    <div><i class="flaticon-smart-watch"></i></div>
-                    <div>
-                        <h3>Secure and Discreet Packaging</h3>
-                        <p>All our products are packaged discreetly to maintain privacy and confidentiality for your peace of mind.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="container">
+      <div class="row">
+          <div class="col-lg-6">
+              <div class="about-img-two">
+                <img src="{{ about_section.image1.url|default:'https://placehold.co/334x316' }}" 
+                class="about1" 
+                alt="About Image 1" 
+                style="width: 334px; height: 316px;">
+           
+           <img src="{{ about_section.image2.url|default:'https://placehold.co/306x288' }}" 
+                class="about2" 
+                alt="About Image 2" 
+                style="width: 306px; height: 288px;">
+           
+           <img src="{{ about_section.image3.url|default:'https://placehold.co/333x316' }}" 
+                class="about3" 
+                alt="About Image 3" 
+                style="width: 333px; height: 316px;">
+           
+              </div>
+          </div>
+          <div class="col-lg-6">
+              <div class="heading two">
+                  <span>{{ about_section.subheading|default:"About Harry Poppers" }}</span>
+                  <h2>{{ about_section.heading|default:"Your Trusted Source for Authentic Poppers" }}</h2>
+              </div>
+              <div class="ultra">
+                  <div><i class="flaticon-voice-bot"></i></div>
+                  <div>
+                      <h3>100% Authentic Products</h3>
+                      <p>{{ about_section.description1|default:"We offer only original, European made poppers that guarantee freshness and quality." }}</p>
+                  </div>
+              </div>
+              <div class="ultra">
+                  <div><i class="flaticon-user-experience"></i></div>
+                  <div>
+                      <h3>Fast Nationwide Delivery</h3>
+                      <p>{{ about_section.description2|default:"Enjoy discreet and quick delivery anywhere in the Philippines via trusted courier services like LBC, Grab, and Lalamove." }}</p>
+                  </div>
+              </div>
+              <div class="ultra">
+                  <div><i class="flaticon-smart-watch"></i></div>
+                  <div>
+                      <h3>Secure and Discreet Packaging</h3>
+                      <p>{{ about_section.description3|default:"All our products are packaged discreetly to maintain privacy and confidentiality for your peace of mind." }}</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
 </section>
+
 
 <section class="benefits-watch" style="background-color: #f3f3f3;">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <div class="heading two">
-                    <span>Why Choose Harry Poppers?</span>
-                    <h2>Benefits of Our <span>Quality Poppers</span></h2>
-                    <p>Get the best poppers at unbeatable prices. Here are some reasons why Harry Poppers is your best choice:</p>
-                </div>
-                <ul class="liststyle pt-0">
-                    <li>100% Authentic, European made products</li>
-                    <li>Fast and reliable nationwide shipping</li>
-                    <li>Fresh and well-maintained products</li>
-                    <li>Discreet packaging for privacy and security</li>
-                </ul>
-            </div>
-            <div class="col-lg-6">
-                <div class="watch-img">
-                    <ul>
-                        <li class="map-pin active">
-                            <div class="location">
-                                <div class="data">
-                                    <p>Fast, nationwide delivery</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="map-pin">
-                            <div class="location">
-                                <div class="data">
-                                    <p>Discreet, secure packaging</p>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <img src="https://placehold.co/636x560" alt="Harry Poppers Delivery and Packaging">
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="container">
+      <div class="row align-items-center">
+          <div class="col-lg-6">
+              <div class="heading two">
+                  <span>{{ benefits_section.heading|default:"Why Choose Harry Poppers?" }}</span>
+                  <h2>{{ benefits_section.subheading|default:"Benefits of Our <span>Quality Poppers</span>" }}</h2>
+                  <p>{{ benefits_section.description|default:"Get the best poppers at unbeatable prices. Here are some reasons why Harry Poppers is your best choice:" }}</p>
+              </div>
+              <ul class="liststyle pt-0">
+                  <li>{{ benefits_section.benefit_1|default:"100% Authentic, European made products" }}</li>
+                  <li>{{ benefits_section.benefit_2|default:"Fast and reliable nationwide shipping" }}</li>
+                  <li>{{ benefits_section.benefit_3|default:"Fresh and well-maintained products" }}</li>
+                  <li>{{ benefits_section.benefit_4|default:"Discreet packaging for privacy and security" }}</li>
+              </ul>
+          </div>
+          <div class="col-lg-6">
+              <div class="watch-img">
+                  <ul>
+                      <li class="map-pin active">
+                          <div class="location">
+                              <div class="data">
+                                  <p>{{ benefits_section.benefit_2|default:"Fast, nationwide delivery" }}</p>
+                              </div>
+                          </div>
+                      </li>
+                      <li class="map-pin">
+                          <div class="location">
+                              <div class="data">
+                                  <p>{{ benefits_section.benefit_4|default:"Discreet, secure packaging" }}</p>
+                              </div>
+                          </div>
+                      </li>
+                  </ul>
+                  <img src="{{ benefits_section.image.url|default:'https://placehold.co/636x560' }}" alt="Harry Poppers Delivery and Packaging">
+              </div>
+          </div>
+      </div>
+  </div>
 </section>
+
+
 <section id="contact" class="gap">
-    <div class="container">
-        <div class="heading">
-            <img src="assets/img/heading_img-2.png" alt="Harry Poppers">
-            <span>Contact Harry Poppers</span>
-            <h2>Have questions or need more information? <span>Get in touch with us</span></h2>
-        </div>
-        <div class="row">
-            <div class="col-lg-7">
-                <div class="row g-sm-4 g-2">
-                    <div class="col-6">
-                        <div class="hover-img-two">
-                            <a href="https://placehold.co/361x337" data-fancybox="gallery">
-                                <figure class="imgg">
-                                    <img src="https://placehold.co/361x337" alt="Harry Poppers Product">
-                                    <img src="https://placehold.co/361x337" alt="Harry Poppers Product">
-                                </figure>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="hover-img-two">
-                            <a href="https://placehold.co/361x337" data-fancybox="gallery">
-                                <figure class="imgg">
-                                    <img src="https://placehold.co/361x337" alt="Harry Poppers Packaging">
-                                    <img src="https://placehold.co/361x337" alt="Harry Poppers Packaging">
-                                </figure>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="hover-img-two">
-                            <a href="https://placehold.co/233x212" data-fancybox="gallery">
-                                <figure class="imgg">
-                                    <img src="https://placehold.co/233x212" alt="Harry Poppers Products">
-                                    <img src="https://placehold.co/233x212" alt="Harry Poppers Products">
-                                </figure>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="hover-img-two">
-                            <a href="https://placehold.co/233x212" data-fancybox="gallery">
-                                <figure class="imgg">
-                                    <img src="https://placehold.co/233x212" alt="Harry Poppers Orders">
-                                    <img src="https://placehold.co/233x212" alt="Harry Poppers Orders">
-                                </figure>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="hover-img-two">
-                            <a href="https://placehold.co/233x212" data-fancybox="gallery">
-                                <figure class="imgg">
-                                    <img src="https://placehold.co/233x212" alt="Harry Poppers Delivery">
-                                    <img src="https://placehold.co/233x212" alt="Harry Poppers Delivery">
-                                </figure>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-5">
-                <form role="form" class="get-a-quote" id="contact-form" method="post" style="background-image: url(assets/img/lins-img-2.png);">
-                    <i class="flaticon-successful"></i>
-                    <div>
-                        <h3>Contact Us</h3>
-                        <h6>Get In Touch for Poppers or More Information</h6>
-                    </div>
-                    <input type="text" name="Complete Name" placeholder="Complete Name" required="">
+  <div class="container">
+      <div class="heading">
+          <span>Contact Harry Poppers</span>
+          <h2>Have questions or need more information? <span>Get in touch with us</span></h2>
+      </div>
+      <div class="row">
+          <div class="col-lg-7">
+              <div class="row g-sm-4 g-2">
+                  {% for contact_image in contact_images %}
+                  <div class="col-6">
+                      <div class="hover-img-two">
+                          <a href="{{ contact_image.image.url }}" data-fancybox="gallery">
+                              <figure class="imgg">
+                                  <img src="{{ contact_image.image.url }}" alt="{{ contact_image.alt_text }}">
+                                  <img src="{{ contact_image.image.url }}" alt="{{ contact_image.alt_text }}">
+                              </figure>
+                          </a>
+                      </div>
+                  </div>
+                  {% empty %}
+                  <p>No contact images available.</p>
+                  {% endfor %}
+              </div>
+          </div>
+          <div class="col-lg-5">
+              <form role="form" class="get-a-quote" id="contact-form" method="post" style="background-image: url(assets/img/lins-img-2.png);">
+                  <i class="flaticon-successful"></i>
+                  <div>
+                      <h3>Contact Us</h3>
+                      <h6>Get In Touch for Poppers or More Information</h6>
+                  </div>
+                  <input type="text" name="Complete Name" placeholder="Complete Name" required="">
 
-                    <input type="email" name="Email Address" placeholder="Email Address" required="">
+                  <input type="email" name="Email Address" placeholder="Email Address" required="">
 
-                    <input type="number" name="Phone No" placeholder="Phone No" required="">
+                  <input type="number" name="Phone No" placeholder="Phone No" required="">
 
-                    <p>What would you like to inquire about?</p>
-                    <div class="d-flex align-items-center">
-                        <div class="radio-button">
-                            <input type="radio" id="Personal" name="inquiry_type" value="Personal">
-                            <label for="Personal">Personal Use</label>
-                        </div>
-                        <div class="radio-button">
-                            <input type="radio" id="Commercial" name="inquiry_type" value="Commercial">
-                            <label for="Commercial">Business / Wholesale</label><br>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn"><span>Submit Inquiry</span></button>
-                </form>
-            </div>
-        </div>
-    </div>
+                  <p>What would you like to inquire about?</p>
+                  <div class="d-flex align-items-center">
+                      <div class="radio-button">
+                          <input type="radio" id="Personal" name="inquiry_type" value="Personal">
+                          <label for="Personal">Personal Use</label>
+                      </div>
+                      <div class="radio-button">
+                          <input type="radio" id="Commercial" name="inquiry_type" value="Commercial">
+                          <label for="Commercial">Business / Wholesale</label><br>
+                      </div>
+                  </div>
+                  <button type="submit" class="btn"><span>Submit Inquiry</span></button>
+              </form>
+          </div>
+      </div>
+  </div>
 </section>
+
+
 <section id="faq" class="accordion-section">
     <div class="container">
       <div class="row">
@@ -293,25 +317,24 @@
       </div>
     </div>
   </section>
-  <section class="poppers-features gap no-bottom" style="background-image: url(https://placehold.co/1920x900);">
+  <section class="poppers-features gap no-bottom" style="background-image: url({% static 'assets/img/usespoppers.PNG' %});">
     <div class="container">
       <div class="video position-relative">
-        <a data-fancybox="" href="https://www.youtube.com/watch?v=xKxrkht7CpY">
+        <a data-fancybox="" href="https://www.youtube.com/watch?v=ya68cEJaEHk&t=29s">
           <i>
             <svg width="11" height="17" viewBox="0 0 11 17" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M11 8.49951L0.5 0.27227L0.5 16.7268L11 8.49951Z" fill="#fff"></path>
             </svg>
           </i>
-          Watch Video
         </a>
       </div>
       <div class="heading">
         <h2>Wide Range of Other Useful Features or Benefits</h2>
         <span>of poppers for recreational use</span>
-        <img src="https://placehold.co/805x480" alt="img" class="android">
+        <img src="{% static 'assets/img/usespoppers.PNG' %}" alt="Features of Poppers" class="android">
       </div>
     </div>
-  </section>
+</section>
   
   <section class="gap">
     <div class="container">
@@ -343,7 +366,7 @@
             </ul>
             <div class="google-star">
               <div>
-                <img src="assets/img/google.png" alt="img">
+                <img src="{% static 'assets/img/google.png' %}" alt="img">
                 <ul class="stars">
                   <li><i class="fa-solid fa-star"></i></li>
                   <li><i class="fa-solid fa-star"></i></li>
@@ -434,10 +457,12 @@
       </div>
     </div>
   </section>
+ 
+ <!--                              
   <section id="updates" class="gap no-top">
     <div class="container">
       <div class="heading">
-        <img src="assets/img/heading_img-2.png" alt="img">
+        <img src="{% static 'assets/img/heading_img-2.png' %}" alt="img">
         <span>Poppers for Social Enjoyment and Recreation</span>
         <h2>Recent <span>Updates</span></h2>
       </div>
@@ -484,6 +509,21 @@
       </div>
     </div>
   </section>
-  
+  -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const seeMoreBtn = document.getElementById("see-more-btn");
+    const hiddenItems = document.querySelectorAll(".product-item.hidden");
 
+    if (seeMoreBtn) {
+        seeMoreBtn.addEventListener("click", function () {
+            hiddenItems.forEach(item => {
+                item.classList.remove("hidden"); // Reveal hidden products
+            });
+            seeMoreBtn.style.display = "none"; // Hide the "See More" button
+        });
+    }
+});
+
+</script>
 {% endblock %}
