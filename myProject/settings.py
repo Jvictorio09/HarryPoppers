@@ -33,6 +33,8 @@ ALLOWED_HOSTS = [
     'harrypoppers-production.up.railway.app',
     '127.0.0.1',  # If you also want to allow local development
     'localhost',
+    'https://www.harrypoppers.net/',
+    'www.harrypoppers.net',
 ]
 
 # Application definition
