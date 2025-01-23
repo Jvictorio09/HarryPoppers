@@ -6,26 +6,156 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 
 from django.shortcuts import render
-from .models import HeroSection, Service, AboutSection, BenefitsSection, ContactImage
+from .models import HeroSection, Service, AboutSection, BenefitsSection, ContactImage, FAQ, FAQSection
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.shortcuts import render, redirect
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.shortcuts import render, redirect
+from .forms import NewContactForm  # Import the new contact form
 
 def index(request):
+    # Fetch static content for the page
     contact_images = ContactImage.objects.all()[:5]
-    hero_section = HeroSection.objects.first()  # Fetch the hero section
+    hero_section = HeroSection.objects.first()
     services = Service.objects.all()
+    faqs = FAQ.objects.all()
+    faq_section = FAQSection.objects.first()
     about_section = AboutSection.objects.first()
     benefits_section = BenefitsSection.objects.first()
+
+    if request.method == 'POST':
+        # Use the new contact form for validation
+        form = NewContactForm(request.POST)
+        if form.is_valid():
+            # Get cleaned form data
+            full_name = form.cleaned_data['full_name']
+            email_address = form.cleaned_data['email_address']
+            phone_number = form.cleaned_data['phone_number']
+            message = form.cleaned_data['message']
+            inquiry_type = form.cleaned_data['inquiry_type']
+
+            # Prepare email context for admin
+            admin_context = {
+                'full_name': full_name,
+                'email_address': email_address,
+                'phone_number': phone_number,
+                'message': message,
+                'inquiry_type': inquiry_type
+            }
+
+            # Render email content
+            admin_html_content = render_to_string('myApp/main/admin_email_template.html', admin_context)
+            admin_text_content = strip_tags(admin_html_content)
+
+            # Send email to admin
+            admin_email = EmailMultiAlternatives(
+                subject=f"New {inquiry_type} from {full_name}",
+                body=admin_text_content,
+                from_email='harrypopperstore@gmail.com',
+                to=['harrypopperstore@gmail.com']
+            )
+            admin_email.attach_alternative(admin_html_content, "text/html")
+            admin_email.send()
+
+            # Optionally redirect to a success page
+            return redirect('index')  # Replace 'index' with a success page if needed
+        else:
+            # If form is invalid, render the page with error messages
+            return render(request, 'myApp/main/index.html', {
+                'hero_section': hero_section,
+                'services': services,
+                'about_section': about_section,
+                'benefits_section': benefits_section,
+                'contact_images': contact_images,
+                'faqs': faqs,
+                'faq_section': faq_section,
+                'form': form,  # Pass the form with errors
+            })
+
+    # For GET requests, initialize the form
+    form = NewContactForm()
+
     return render(request, 'myApp/main/index.html', {
         'hero_section': hero_section,
         'services': services,
         'about_section': about_section,
         'benefits_section': benefits_section,
-        'contact_images': contact_images
+        'contact_images': contact_images,
+        'faqs': faqs,
+        'faq_section': faq_section,
+        'form': form,  # Pass the new contact form to the template
     })
+
+
+     
+
+
+def send_confirmation_email(name, email):
+    subject = "Thank You for Your Inquiry"
+    message = render_to_string('myApp/main/confirmation_email_template.html', {'name': name})
+    plain_message = strip_tags(message)
+    
+    confirmation_email = EmailMultiAlternatives(
+        subject,
+        plain_message,
+        'harrypopperstore@gmail.com',
+        [email]
+    )
+    confirmation_email.attach_alternative(message, "text/html")
+    confirmation_email.send()
+
+
+
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+  
+from .models import ContactImage
+from django.http import JsonResponse
+
+from django.core.mail import EmailMultiAlternatives
+from django.http import JsonResponse
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from .forms import NewContactForm
+
+def new_contact_view(request):
+    if request.method == 'POST':
+        form = NewContactForm(request.POST)
+        if form.is_valid():
+            # Handle form data
+            full_name = form.cleaned_data['full_name']
+            email_address = form.cleaned_data['email_address']
+            phone_number = form.cleaned_data['phone_number']
+            message = form.cleaned_data['message']
+            inquiry_type = form.cleaned_data['inquiry_type']
+
+            # Optionally send email or save to database
+            # Example: Send email
+            subject = f"New {inquiry_type} from {full_name}"
+            body = f"""
+            Name: {full_name}
+            Email: {email_address}
+            Phone: {phone_number}
+            Message: {message}
+            Inquiry Type: {inquiry_type}
+            """
+            send_mail(subject, body, 'harrypopperstore@gmail.com')  
+
+            return JsonResponse({'status': 'success', 'message': 'Thank you for contacting us!'}, status=200)
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid form data.'}, status=400)
+
+    return render(request, 'new_contact_form.html', {'form': NewContactForm()})
 
 
 from .models import AboutSection
 
-from .models import HeroSection, AboutSection, BenefitsSection, Service, ContactImage
+from .models import HeroSection, AboutSection, BenefitsSection, Service, ContactImage, FAQ, FAQSection
 from django.shortcuts import render, redirect
 from django.contrib.admin.views.decorators import staff_member_required
 
@@ -36,6 +166,8 @@ def admin_landing_page(request):
     about_section = AboutSection.objects.first()
     benefits_section = BenefitsSection.objects.first()
     contact_images = ContactImage.objects.all()
+    faq_section = FAQSection.objects.first()
+    faqs = FAQ.objects.all()
 
     if not hero_section:
         hero_section = HeroSection.objects.create(
@@ -104,13 +236,23 @@ def admin_landing_page(request):
         contact_images = ContactImage.objects.all()
 
     # Handle form submission for ContactImage updates
-    if request.method == 'POST' and 'update_contact_images' in request.POST:
-        for image_id in request.POST.getlist('image_ids'):
-            image_obj = ContactImage.objects.get(id=image_id)
-            if f'image_{image_id}' in request.FILES:
-                image_obj.image = request.FILES[f'image_{image_id}']
-            image_obj.alt_text = request.POST.get(f'alt_text_{image_id}', image_obj.alt_text)
-            image_obj.save()
+    if request.method == 'POST' and 'update_faq_section' in request.POST:
+        faq_section.title = request.POST.get('faq_section_title', faq_section.title)
+        faq_section.description = request.POST.get('faq_section_description', faq_section.description)
+        if request.FILES.get('faq_section_image'):
+            faq_section.side_image = request.FILES['faq_section_image']
+        faq_section.save()
+
+    # Handle FAQ items updates
+    if request.method == 'POST' and 'update_faq_items' in request.POST:
+        for faq_id in request.POST.getlist('faq_ids'):
+            faq = FAQ.objects.get(id=faq_id)
+            faq.question = request.POST.get(f'faq_question_{faq_id}', faq.question)
+            faq.answer = request.POST.get(f'faq_answer_{faq_id}', faq.answer)
+            faq.order = request.POST.get(f'faq_order_{faq_id}', faq.order)
+            if f'faq_image_{faq_id}' in request.FILES:
+                faq.image = request.FILES[f'faq_image_{faq_id}']
+            faq.save()
         
 
     # Context for the template
@@ -120,5 +262,10 @@ def admin_landing_page(request):
         'benefits_section': benefits_section,
         'services': Service.objects.all(),
         'contact_images': contact_images,
+        'faq_section': faq_section,
+        'faqs': faqs,
     }
     return render(request, 'myApp/customadmin/custom_admin_dashboard.html', context)
+
+
+

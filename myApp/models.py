@@ -109,3 +109,30 @@ class ContactImage(models.Model):
 
     def __str__(self):
         return self.alt_text or "Contact Image"
+
+
+
+class FAQ(models.Model):
+    question = models.CharField(max_length=255, help_text="FAQ question")
+    answer = models.TextField(help_text="FAQ answer")
+    order = models.PositiveIntegerField(default=0, help_text="Order of the FAQ")
+    image = models.ImageField(
+        upload_to='faq_images/', blank=True, null=True, help_text="Optional image for the FAQ"
+    )
+
+    class Meta:
+        ordering = ['order']  # FAQs will be ordered by their 'order' field
+
+    def __str__(self):
+        return self.question
+    
+
+class FAQSection(models.Model):
+    title = models.CharField(max_length=255, help_text="Main title for the FAQ section")
+    description = models.TextField(help_text="Short description for the FAQ section")
+    side_image = models.ImageField(
+        upload_to='faq_images/', blank=True, null=True, help_text="Image to display in the FAQ section"
+    )
+
+    def __str__(self):
+        return self.title
