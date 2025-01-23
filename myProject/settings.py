@@ -87,16 +87,29 @@ TEMPLATES = [
 WSGI_APPLICATION = "myProject.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+import environ
+import os
+import dj_database_url
+from pathlib import Path
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Initialize environ
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+USE_SQLITE = env.bool('USE_SQLITE', default=False)  # Default is False to prioritize PostgreSQL
+if USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
-
+else:
+    DATABASES = {
+        'default': dj_database_url.config(default=env('DATABASE_URL'))
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -165,6 +178,7 @@ def get_env(var_name, default=None):
     """
     return env(var_name, default=os.getenv(var_name, default))
 
+'''                   
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -172,9 +186,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'harrypopperstore@gmail.com'
 EMAIL_HOST_PASSWORD = 'utpq mydr ngep sodu'  # App Password without spaces
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+'''
 
-
-'''           
+           
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = get_env('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = int(get_env('EMAIL_PORT', default=587))
@@ -182,4 +196,3 @@ EMAIL_USE_TLS = get_env('EMAIL_USE_TLS', default=True) in [True, 'True', 'true',
 EMAIL_HOST_USER = get_env('EMAIL_HOST_USER', default='harrypopperstore@gmail.com')
 EMAIL_HOST_PASSWORD = get_env('EMAIL_HOST_PASSWORD')  # App password
 DEFAULT_FROM_EMAIL = get_env('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
-'''
