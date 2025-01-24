@@ -61,6 +61,10 @@ def index(request):
             admin_email.attach_alternative(admin_html_content, "text/html")
             admin_email.send()
 
+            send_confirmation_email(full_name, email_address)
+            print(f"Sending confirmation email to {email_address}")
+
+
             # Optionally redirect to a success page
             return redirect('index')  # Replace 'index' with a success page if needed
         else:
@@ -105,6 +109,7 @@ def send_confirmation_email(name, email):
         'harrypopperstore@gmail.com',
         [email]
     )
+    
     confirmation_email.attach_alternative(message, "text/html")
     confirmation_email.send()
 

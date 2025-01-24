@@ -118,14 +118,14 @@
             padding-bottom: 20px;
             letter-spacing: 2px;
             font-weight: bold;
-            font-size: 88px;
+            font-size: 60px;
             margin-bottom: 0;
 
             @include respond-to("xxl") {
                 padding-top: 20px;
                 padding-bottom: 10px;
-                font-size: 72px;
-                line-height: 82px;
+                font-size: 60px;
+                line-height: 78px;
             }
 
             @include respond-to("lg") {
@@ -133,12 +133,12 @@
             }
 
             @include respond-to("mdd") {
-                font-size: 60px;
+                font-size: 50px;
                 line-height: 70px;
             }
 
             @include respond-to("sm") {
-                font-size: 50px;
+                font-size: 40px;
                 line-height: 60px;
             }
         }
