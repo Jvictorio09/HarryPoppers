@@ -33,6 +33,17 @@ class ContactImageAdmin(admin.ModelAdmin):
     list_display = ('alt_text',)
 
 
+from django.contrib import admin
+from .models import FAQ, FAQSection, Service, ContactImage
+
+@admin.register(FAQ)
+class FAQAdmin(admin.ModelAdmin):
+    list_display = ('question', 'answer', 'order')
+    search_fields = ('question',)
+    ordering = ('order',)
+
+
+
 
 from django.urls import reverse
 from django.utils.html import format_html
