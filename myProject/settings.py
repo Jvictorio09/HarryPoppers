@@ -37,6 +37,12 @@ ALLOWED_HOSTS = [
     'www.harrypoppers.net',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://www.harrypoppers.net',  # Add your production domain
+    'https://harrypoppers.net',      # Add this if you have a non-www version
+]
+
+
 # Application definition
 
 INSTALLED_APPS = [
