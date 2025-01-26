@@ -167,7 +167,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from .models import HeroSection, AboutSection, BenefitsSection, Service, ContactImage, FAQ
 
-@staff_member_required
+ 
 def admin_landing_page(request):
     # Fetching data from the database
     hero_section = HeroSection.objects.first()
@@ -217,7 +217,7 @@ def render_modal_form(request, template_name, form, context=None):
 
 
 # ----------- Hero Section -----------
-@staff_member_required
+ 
 def hero_section(request):
     # Fetch the Hero Section or create a default one
     hero_section = HeroSection.objects.first()
@@ -249,7 +249,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .models import Service  # Still referring to the model as "Service"
 from django.contrib.admin.views.decorators import staff_member_required
 
-@staff_member_required
+ 
 def products(request):
     # Fetch all services, alias as products for the frontend
     products = Service.objects.all()
@@ -258,7 +258,7 @@ def products(request):
     })
 
 
-@staff_member_required
+ 
 def add_product(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -281,7 +281,7 @@ def add_product(request):
     return render(request, 'myApp/customadmin/partials/add_product_modal.html')
 
 
-@staff_member_required
+ 
 def edit_product(request, product_id):
     product = get_object_or_404(Service, id=product_id)
 
@@ -301,7 +301,7 @@ def edit_product(request, product_id):
     })
 
 
-@staff_member_required
+ 
 def delete_product(request, product_id):
     product = get_object_or_404(Service, id=product_id)
     if request.method == 'POST':
@@ -314,7 +314,7 @@ def delete_product(request, product_id):
 
 # ----------- Other Views for About Section, Benefits Section, etc. -----------
 
-@staff_member_required
+ 
 def about_section(request):
     # Fetch the About Section or create a default one
     about_section = AboutSection.objects.first()
@@ -356,7 +356,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import BenefitsSection
 from django.contrib.admin.views.decorators import staff_member_required
 
-@staff_member_required
+ 
 def benefits_section(request):
     # Fetch the BenefitsSection instance (assuming there's only one)
     benefits_section = BenefitsSection.objects.first()
@@ -384,7 +384,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import ContactImage
 from django.contrib.admin.views.decorators import staff_member_required
 
-@staff_member_required
+ 
 def contact_images(request):
     # Fetch all contact images
     contact_images = ContactImage.objects.all()
@@ -400,7 +400,7 @@ def contact_images(request):
         'contact_images': contact_images,
     })
 
-@staff_member_required
+ 
 def edit_contact_image(request, image_id):
     contact_image = get_object_or_404(ContactImage, id=image_id)
     if request.method == 'POST':
@@ -413,7 +413,7 @@ def edit_contact_image(request, image_id):
         'contact_image': contact_image,
     })
 
-@staff_member_required
+ 
 def delete_contact_image(request, image_id):
     contact_image = get_object_or_404(ContactImage, id=image_id)
     if request.method == 'POST':
