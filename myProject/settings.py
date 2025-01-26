@@ -202,3 +202,6 @@ EMAIL_USE_TLS = get_env('EMAIL_USE_TLS', default=True) in [True, 'True', 'true',
 EMAIL_HOST_USER = get_env('EMAIL_HOST_USER', default='harrypopperstore@gmail.com')
 EMAIL_HOST_PASSWORD = get_env('EMAIL_HOST_PASSWORD')  # App password
 DEFAULT_FROM_EMAIL = get_env('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
+
+
+LOGIN_URL = "/custom-admin/login/"

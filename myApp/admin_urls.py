@@ -16,4 +16,6 @@ urlpatterns = [
     path("contact-images/edit/<int:image_id>/", views.edit_contact_image, name="edit_contact_image"),
     path("contact-images/delete/<int:image_id>/", views.delete_contact_image, name="delete_contact_image"),
     path("faqs/", views.faqs, name="faqs"),
+    path("login/", views.admin_login, name="login"),
+    path("logout/", views.admin_logout, name="logout"),
 ]

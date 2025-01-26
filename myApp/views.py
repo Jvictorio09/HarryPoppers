@@ -166,8 +166,52 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 from django.shortcuts import render
 from .models import HeroSection, AboutSection, BenefitsSection, Service, ContactImage, FAQ
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import JsonResponse
+from .models import HeroSection, AboutSection, BenefitsSection, Service, ContactImage, FAQ, FAQSection
+from .forms import FAQForm
 
- 
+
+# Custom decorator to check if the user is staff
+def staff_required(view_func):
+    @user_passes_test(lambda u: u.is_authenticated and u.is_staff, login_url="custom_admin:login")
+    def wrapped_view(*args, **kwargs):
+        return view_func(*args, **kwargs)
+    return wrapped_view
+
+
+# Admin Login View
+def admin_login(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None and user.is_staff:
+            login(request, user)
+            return redirect("custom_admin:admin_landing_page")
+        else:
+            return render(request, "myApp/customadmin/login.html", {"error": "Invalid credentials or not a staff member."})
+    return render(request, "myApp/customadmin/login.html")
+
+
+# Admin Logout View
+@login_required(login_url="custom_admin:login")
+def admin_logout(request):
+    logout(request)
+    return redirect("custom_admin:login")
+
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+
+class CustomLoginView(LoginView):
+    template_name = "myApp/customadmin/login.html"  # Path to your login template
+    redirect_authenticated_user = True
+    next_page = reverse_lazy("custom_admin:admin_landing_page")
+
+
+@login_required
 def admin_landing_page(request):
     # Fetching data from the database
     hero_section = HeroSection.objects.first()
@@ -217,7 +261,7 @@ def render_modal_form(request, template_name, form, context=None):
 
 
 # ----------- Hero Section -----------
- 
+@login_required
 def hero_section(request):
     # Fetch the Hero Section or create a default one
     hero_section = HeroSection.objects.first()
@@ -249,7 +293,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .models import Service  # Still referring to the model as "Service"
 from django.contrib.admin.views.decorators import staff_member_required
 
- 
+@login_required
 def products(request):
     # Fetch all services, alias as products for the frontend
     products = Service.objects.all()
@@ -258,7 +302,7 @@ def products(request):
     })
 
 
- 
+@login_required
 def add_product(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -281,7 +325,7 @@ def add_product(request):
     return render(request, 'myApp/customadmin/partials/add_product_modal.html')
 
 
- 
+@login_required
 def edit_product(request, product_id):
     product = get_object_or_404(Service, id=product_id)
 
@@ -301,7 +345,7 @@ def edit_product(request, product_id):
     })
 
 
- 
+@login_required
 def delete_product(request, product_id):
     product = get_object_or_404(Service, id=product_id)
     if request.method == 'POST':
@@ -314,7 +358,7 @@ def delete_product(request, product_id):
 
 # ----------- Other Views for About Section, Benefits Section, etc. -----------
 
- 
+@login_required
 def about_section(request):
     # Fetch the About Section or create a default one
     about_section = AboutSection.objects.first()
@@ -356,7 +400,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import BenefitsSection
 from django.contrib.admin.views.decorators import staff_member_required
 
- 
+@login_required
 def benefits_section(request):
     # Fetch the BenefitsSection instance (assuming there's only one)
     benefits_section = BenefitsSection.objects.first()
@@ -384,7 +428,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import ContactImage
 from django.contrib.admin.views.decorators import staff_member_required
 
- 
+@login_required
 def contact_images(request):
     # Fetch all contact images
     contact_images = ContactImage.objects.all()
@@ -400,7 +444,7 @@ def contact_images(request):
         'contact_images': contact_images,
     })
 
- 
+@login_required
 def edit_contact_image(request, image_id):
     contact_image = get_object_or_404(ContactImage, id=image_id)
     if request.method == 'POST':
@@ -413,7 +457,7 @@ def edit_contact_image(request, image_id):
         'contact_image': contact_image,
     })
 
- 
+@login_required
 def delete_contact_image(request, image_id):
     contact_image = get_object_or_404(ContactImage, id=image_id)
     if request.method == 'POST':
