@@ -23,18 +23,23 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
             max-width: 420px;
             width: 100%;
-            text-align: center;
         }
         .login-container h2 {
             font-family: 'Poppins', sans-serif;
             font-weight: bold;
             font-size: 28px;
             color: #10273d;
-            margin-bottom: 20px;
+            text-align: center;
+        }
+        .login-container p {
+            font-size: 14px;
+            text-align: center;
         }
         .login-container .form-label {
             font-weight: 500;
             font-size: 14px;
+            text-align: left; /* Align labels to the left */
+            display: block; /* Ensure labels span the full width */
         }
         .login-container .form-control {
             border-radius: 8px;
@@ -43,6 +48,7 @@
             padding: 12px 15px;
             border: 1px solid #ddd;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: left; /* Ensure input text aligns left */
         }
         .login-container button {
             background-color: #3b82f6;
@@ -59,10 +65,11 @@
         }
         .login-container .alert {
             font-size: 14px;
+            text-align: center;
         }
         .login-container .text-muted {
             font-size: 12px;
-            margin-top: 15px;
+            text-align: center;
         }
         .login-container a {
             color: #3b82f6;
@@ -80,13 +87,13 @@
     <form method="POST" class="mt-4">
         {% csrf_token %}
         {% if error %}
-            <div class="alert alert-danger text-center">{{ error }}</div>
+            <div class="alert alert-danger">{{ error }}</div>
         {% endif %}
-        <div class="mb-3">
+        <div class="mb-3 text-start">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 text-start">
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
         </div>
