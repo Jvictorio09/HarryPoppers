@@ -136,29 +136,91 @@ body {
   padding-top: 80px; /* Add padding equal to the header height */
 }
 
-</style>
+.right-section ul {
+        display: flex;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
 
+    .right-section ul li {
+        margin-left: 10px; /* Space between buttons */
+    }
+
+    .right-section .btn {
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .right-section .btn-warning {
+        color: #fff;
+        background-color: #ffcc00;
+        border: none;
+    }
+
+    .right-section .btn-warning:hover {
+        background-color: #e0b800;
+    }
+
+    .right-section .btn-outline-light {
+        border: 1px solid #fff;
+        color: #fff;
+    }
+
+    .right-section .btn-outline-light:hover {
+        background-color: #fff;
+        color: #000;
+    }
+
+    /* Adjust header layout for mobile devices */
+    @media (max-width: 768px) {
+        .right-section ul {
+            flex-direction: column;
+        }
+
+        .right-section ul li {
+            margin-left: 0;
+            margin-bottom: 10px;
+        }
+    }
+
+</style>
 <header id="stickyHeader">
     <div class="container">
         <div class="top-bar">
+            <!-- Logo Section -->
             <div class="logo">
-                <a href="#">
+                <a href="{% url 'custom_admin:admin_landing_page' %}">
                     <img alt="Harry Poppers Logo" src="{% static 'assets/img/harrypoppersupdated.png' %}">
                 </a>
             </div>
+
+            <!-- Navigation Section -->
             <nav>
                 <ul>
                     <li><a href="{% url 'custom_admin:admin_landing_page' %}">Dashboard</a></li>
                     <li><a href="{% url 'custom_admin:products' %}">Products</a></li>
                     <li><a href="{% url 'custom_admin:about_section' %}">About</a></li>
-                    <!--             
-                    <li><a href="{% url 'custom_admin:faqs' %}">FAQs</a></li>
-                    -->
                     <li><a href="{% url 'custom_admin:contact_images' %}">Contact Images</a></li>
                 </ul>
             </nav>
-            
-             
+
+            <!-- Right Section: View Site and Logout -->
+            <div class="right-section">
+                <ul>
+                    <li>
+                        <a href="/" target="_blank" class="btn btn-outline-light btn-sm">View Site</a>
+                    </li>
+                    <li>
+                        <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-warning btn-sm">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </header>
