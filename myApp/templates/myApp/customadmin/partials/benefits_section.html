@@ -1,0 +1,51 @@
+{% extends 'myApp/customadmin/base.html' %}
+
+{% load static %}
+
+{% block title %}Manage Benefits Section{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-4">Manage Benefits Section</h1>
+
+    <form method="post" enctype="multipart/form-data" action="{% url 'custom_admin:benefits_section' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="heading" class="form-label">Heading</label>
+            <input type="text" name="heading" id="heading" class="form-control" value="{{ benefits_section.heading }}">
+        </div>
+        <div class="mb-3">
+            <label for="subheading" class="form-label">Subheading</label>
+            <input type="text" name="subheading" id="subheading" class="form-control" value="{{ benefits_section.subheading }}">
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" id="description" class="form-control" rows="3">{{ benefits_section.description }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="benefit_1" class="form-label">Benefit 1</label>
+            <input type="text" name="benefit_1" id="benefit_1" class="form-control" value="{{ benefits_section.benefit_1 }}">
+        </div>
+        <div class="mb-3">
+            <label for="benefit_2" class="form-label">Benefit 2</label>
+            <input type="text" name="benefit_2" id="benefit_2" class="form-control" value="{{ benefits_section.benefit_2 }}">
+        </div>
+        <div class="mb-3">
+            <label for="benefit_3" class="form-label">Benefit 3</label>
+            <input type="text" name="benefit_3" id="benefit_3" class="form-control" value="{{ benefits_section.benefit_3 }}">
+        </div>
+        <div class="mb-3">
+            <label for="benefit_4" class="form-label">Benefit 4</label>
+            <input type="text" name="benefit_4" id="benefit_4" class="form-control" value="{{ benefits_section.benefit_4 }}">
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Image</label>
+            {% if benefits_section.image %}
+            <img src="{{ benefits_section.image.url }}" alt="Benefits Section Image" class="img-fluid mb-3" style="max-width: 300px;">
+            {% endif %}
+            <input type="file" name="image" id="image" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Update Benefits Section</button>
+    </form>
+</div>
+{% endblock %}

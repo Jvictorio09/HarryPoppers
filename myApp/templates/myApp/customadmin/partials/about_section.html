@@ -1,0 +1,86 @@
+{% extends 'myApp/customadmin/base.html' %}
+
+{% load static %}
+
+{% block title %}About Section Management{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-4">Manage About Section</h1>
+
+    <!-- About Section Form -->
+    <form method="post" enctype="multipart/form-data" class="shadow p-4 bg-light rounded">
+        {% csrf_token %}
+        <input type="hidden" name="update_about" value="true">
+
+        <div class="mb-3">
+            <label for="heading" class="form-label">Heading:</label>
+            <input type="text" name="heading" id="heading" class="form-control" 
+                   value="{{ about_section.heading }}" placeholder="Enter Heading" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="subheading" class="form-label">Subheading:</label>
+            <input type="text" name="subheading" id="subheading" class="form-control" 
+                   value="{{ about_section.subheading }}" placeholder="Enter Subheading" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="description1" class="form-label">Description 1:</label>
+            <textarea name="description1" id="description1" class="form-control" 
+                      placeholder="Enter Description 1" rows="4" required>{{ about_section.description1 }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="description2" class="form-label">Description 2:</label>
+            <textarea name="description2" id="description2" class="form-control" 
+                      placeholder="Enter Description 2" rows="4">{{ about_section.description2 }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="description3" class="form-label">Description 3:</label>
+            <textarea name="description3" id="description3" class="form-control" 
+                      placeholder="Enter Description 3" rows="4">{{ about_section.description3 }}</textarea>
+        </div>
+
+        <!-- Image 1 -->
+        <div class="mb-3">
+            <label for="image1" class="form-label">Current Image 1:</label>
+            {% if about_section.image1 %}
+                <img src="{{ about_section.image1.url }}" alt="Image 1" class="img-fluid mb-2" style="max-width: 100%; height: auto;">
+            {% else %}
+                <p class="text-muted">No Image 1 uploaded yet.</p>
+            {% endif %}
+            <label for="image1" class="form-label">Upload New Image 1:</label>
+            <input type="file" name="image1" id="image1" class="form-control">
+        </div>
+
+        <!-- Image 2 -->
+        <div class="mb-3">
+            <label for="image2" class="form-label">Current Image 2:</label>
+            {% if about_section.image2 %}
+                <img src="{{ about_section.image2.url }}" alt="Image 2" class="img-fluid mb-2" style="max-width: 100%; height: auto;">
+            {% else %}
+                <p class="text-muted">No Image 2 uploaded yet.</p>
+            {% endif %}
+            <label for="image2" class="form-label">Upload New Image 2:</label>
+            <input type="file" name="image2" id="image2" class="form-control">
+        </div>
+
+        <!-- Image 3 -->
+        <div class="mb-3">
+            <label for="image3" class="form-label">Current Image 3:</label>
+            {% if about_section.image3 %}
+                <img src="{{ about_section.image3.url }}" alt="Image 3" class="img-fluid mb-2" style="max-width: 100%; height: auto;">
+            {% else %}
+                <p class="text-muted">No Image 3 uploaded yet.</p>
+            {% endif %}
+            <label for="image3" class="form-label">Upload New Image 3:</label>
+            <input type="file" name="image3" id="image3" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{% url 'custom_admin:admin_landing_page' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </form>
+</div>
+{% endblock %}

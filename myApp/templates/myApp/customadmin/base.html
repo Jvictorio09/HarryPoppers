@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Harry Poppers - Authentic UK-Made Poppers{% endblock %}</title>
+    <link rel="icon" href="{% static 'assets/img/2.png' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/swiper.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/jquery.fancybox.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/font/flaticon_mycollection.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Harry Poppers - Authentic UK-made products. We offer fresh and high-quality poppers with discreet packaging. Freebies with every order.">
+    <meta name="keywords" content="Harry Poppers, Poppers, Authentic Poppers, UK-made Poppers, Cheap Poppers, Fresh Poppers, Philippines, Poppers for sale">
+    <meta name="author" content="Harry Poppers">
+    <meta name="robots" content="index, follow">
+</head>
+ 
+
+<body class="two">
+     
+
+    
+    {% include 'myApp/customadmin/header.html' %}
+    {% block content %}
+    
+    {% endblock %}
+
+     
+
+    <div id="scroll-percentage"><span id="scroll-percentage-value"></span></div>
+
+    <!-- JavaScript Files -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/swiper.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+    <script src="{% static 'assets/js/sweetalert.min.js' %}"></script>
+    <script src="{% static 'assets/js/contact.js' %}"></script>
+</body>
+
+</html>

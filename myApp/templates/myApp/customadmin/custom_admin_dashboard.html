@@ -1,598 +1,123 @@
-{% extends 'admin/base.html' %}
+{% extends 'myApp/customadmin/base.html' %}
 {% load static %}
 
-{% block title %}Custom Admin Dashboard{% endblock %}
+{% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<style>
-/* General Form Styling */
-form {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Form Heading */
-h2 {
-    text-align: center;
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 20px;
-}
-
-/* Label Styling */
-label {
-    display: block;
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 8px;
-}
-
-/* Input Fields */
-input[type="text"],
-textarea,
-input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-    color: #333;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus,
-textarea:focus,
-input[type="file"]:focus {
-    border-color: #007BFF;
-    outline: none;
-}
-
-/* Textarea Styling */
-textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
-/* Submit Button */
-button[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007BFF;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    form {
-        padding: 15px;
-    }
-
-    button[type="submit"] {
-        font-size: 14px;
-    }
-}
-
-
-/* Scoped Styling for Service Table */
-.service-table-container {
-    margin: 20px;
-    padding: 20px;
-    background: #f7f7f7;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.service-table-container table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Table Head Styling */
-.service-table-container thead {
-    background-color: #007BFF;
-    color: #fff;
-}
-
-.service-table-container thead th {
-    padding: 12px 15px;
-    font-weight: 600;
-    text-align: left;
-}
-
-/* Table Body Styling */
-.service-table-container tbody tr {
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.3s ease;
-}
-
-.service-table-container tbody tr:hover {
-    background-color: #f5f5f5;
-}
-
-.service-table-container tbody td {
-    padding: 12px 15px;
-    vertical-align: middle;
-}
-
-/* Image in Table */
-.service-table-container tbody td img {
-    border-radius: 4px;
-    display: block;
-    margin: 0 auto;
-    max-height: 80px;
-}
-
-/* Action Links */
-.service-table-container td a {
-    text-decoration: none;
-    padding: 6px 12px;
-    margin: 0 5px;
-    color: #fff;
-    background-color: #28a745;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-}
-
-.service-table-container td a:hover {
-    background-color: #218838;
-}
-
-.service-table-container td a:nth-child(2) {
-    background-color: #dc3545;
-}
-
-.service-table-container td a:nth-child(2):hover {
-    background-color: #c82333;
-}
-
-/* Add New Service Button */
-.service-table-container .btn {
-    display: inline-block;
-    margin: 20px 0;
-    padding: 10px 15px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007BFF;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    text-align: center;
-}
-
-.service-table-container .btn:hover {
-    background-color: #0056b3;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .service-table-container table {
-        font-size: 14px;
-    }
-
-    .service-table-container td a,
-    .service-table-container .btn {
-        font-size: 12px;
-        padding: 8px 10px;
-    }
-
-    .service-table-container td img {
-        width: 80px;
-    }
-}
-
-
-/* Contact Section Container */
-.contact-section-container {
-    margin: 20px;
-    padding: 20px;
-    background: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Section Heading */
-.contact-section-container h2 {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-/* Table Styling */
-.contact-section-container table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.contact-section-container thead {
-    background-color: #007BFF;
-    color: #fff;
-}
-
-.contact-section-container thead th {
-    padding: 12px 15px;
-    font-weight: 600;
-    text-align: left;
-}
-
-.contact-section-container tbody tr {
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.3s ease;
-}
-
-.contact-section-container tbody tr:hover {
-    background-color: #f5f5f5;
-}
-
-.contact-section-container tbody td {
-    padding: 12px 15px;
-    text-align: center;
-    vertical-align: middle;
-}
-
-/* Image in Table */
-.contact-section-container tbody td img {
-    border-radius: 4px;
-    display: block;
-    margin: 0 auto;
-    max-height: 80px;
-}
-
-/* Input Fields */
-.contact-section-container input[type="text"],
-.contact-section-container input[type="file"] {
-    width: 90%;
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-top: 10px;
-}
-
-.contact-section-container input[type="text"]:focus,
-.contact-section-container input[type="file"]:focus {
-    border-color: #007BFF;
-    outline: none;
-}
-
-/* Submit Button */
-.contact-section-container button[type="submit"] {
-    display: block;
-    width: 100%;
-    padding: 10px 15px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007BFF;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-align: center;
-    transition: background-color 0.3s ease;
-}
-
-.contact-section-container button[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-/* Add New Contact Image Button */
-.contact-section-container .btn {
-    display: inline-block;
-    padding: 10px 15px;
-    font-size: 14px;
-    color: #fff;
-    background-color: #28a745;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-.contact-section-container .btn:hover {
-    background-color: #218838;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .contact-section-container table {
-        font-size: 14px;
-    }
-
-    .contact-section-container tbody td img {
-        max-width: 60px;
-    }
-
-    .contact-section-container input[type="text"],
-    .contact-section-container input[type="file"] {
-        width: 100%;
-    }
-
-    .contact-section-container button,
-    .contact-section-container .btn {
-        font-size: 14px;
-    }
-}
-
-/* FAQ Section Styles */
-.faq-section-container {
-    margin: 20px;
-    padding: 20px;
-    background: #f7f7f7;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.faq-section-container h2 {
-    font-size: 24px;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.faq-section-container table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.faq-section-container thead {
-    background-color: #007BFF;
-    color: #fff;
-}
-
-.faq-section-container tbody tr {
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.3s ease;
-}
-
-.faq-section-container tbody tr:hover {
-    background-color: #f5f5f5;
-}
-
-.faq-section-container td {
-    padding: 12px 15px;
-    vertical-align: middle;
-    text-align: left;
-}
-
-.faq-section-container td img {
-    border-radius: 4px;
-    display: block;
-    margin: 0 auto;
-    max-height: 80px;
-}
-
-
-</style>
-
-<h1>Custom Admin Dashboard</h1>
-
-<!-- Hero Section Form -->
-<h2>Hero Section</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="hidden" name="update_hero" value="true">
-    <label>Title:</label>
-    <input type="text" name="title" value="{{ hero_section.title }}">
-    <label>Subtitle:</label>
-    <input type="text" name="subtitle" value="{{ hero_section.subtitle }}">
-    <label>Description:</label>
-    <textarea name="description">{{ hero_section.description }}</textarea>
-    <label>Image:</label>
-    <input type="file" name="image">
-    <button type="submit">Update Hero Section</button>
-</form>
-
-<!-- About Section Form -->
-<h2>About Section</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="hidden" name="update_about" value="true">
-    <label>Heading:</label>
-    <input type="text" name="heading" value="{{ about_section.heading }}">
-    <label>Subheading:</label>
-    <input type="text" name="subheading" value="{{ about_section.subheading }}">
-    <label>Description 1:</label>
-    <textarea name="description1">{{ about_section.description1 }}</textarea>
-    <label>Description 2:</label>
-    <textarea name="description2">{{ about_section.description2 }}</textarea>
-    <label>Description 3:</label>
-    <textarea name="description3">{{ about_section.description3 }}</textarea>
-    <label>Image 1:</label>
-    <input type="file" name="image1">
-    <label>Image 2:</label>
-    <input type="file" name="image2">
-    <label>Image 3:</label>
-    <input type="file" name="image3">
-    <button type="submit">Update About Section</button>
-</form>
-
-<!-- Services Section -->
-<h2>Services</h2>
-<div class="service-table-container"> 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Image</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for service in services %}
-        <tr>
-            <td>{{ service.name }}</td>
-            <td>₱{{ service.price }}</td>
-            <td><img src="{{ service.image.url }}" alt="{{ service.name }}" width="100"></td>
-            <td>
-                <a href="{% url 'admin:myApp_service_change' service.id %}">Edit</a>
-                <a href="{% url 'admin:myApp_service_delete' service.id %}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<a href="{% url 'admin:myApp_service_add' %}" class="btn">Add New Service</a>
-</div>
-
-
-<!-- Benefits Section Form -->
-<h2>Benefits Section</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="hidden" name="update_benefits" value="true">
-    <label>Heading:</label>
-    <input type="text" name="heading" value="{{ benefits_section.heading }}">
-    <label>Subheading:</label>
-    <input type="text" name="subheading" value="{{ benefits_section.subheading }}">
-    <label>Description:</label>
-    <textarea name="description">{{ benefits_section.description }}</textarea>
-    <label>Benefit 1:</label>
-    <input type="text" name="benefit_1" value="{{ benefits_section.benefit_1 }}">
-    <label>Benefit 2:</label>
-    <input type="text" name="benefit_2" value="{{ benefits_section.benefit_2 }}">
-    <label>Benefit 3:</label>
-    <input type="text" name="benefit_3" value="{{ benefits_section.benefit_3 }}">
-    <label>Benefit 4:</label>
-    <input type="text" name="benefit_4" value="{{ benefits_section.benefit_4 }}">
-    <label>Image:</label>
-    <input type="file" name="image">
-    <button type="submit">Update Benefits Section</button>
-</form>
-
-
-
-<div class="contact-section-container">
-    <h2>Contact Section Images</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="hidden" name="update_contact_images" value="true">
-        <table>
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Alt Text</th>
-                    <th>New Image</th>
-                </tr>
-            </thead>
-            <a href="{% url 'admin:myApp_contactimage_add' %}" class="btn btn-primary">Add New Contact Image</a>
-            <tbody>
-                {% for image in contact_images %}
-                <tr>
-                    <td><img src="{{ image.image.url }}" alt="{{ image.alt_text }}" width="100"></td>
-                    <td>
-                        <input type="hidden" name="image_ids" value="{{ image.id }}">
-                        <input type="text" name="alt_text_{{ image.id }}" value="{{ image.alt_text }}">
-                    </td>
-                    <td>
-                        <input type="file" name="image_{{ image.id }}">
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="3">No contact images available.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <button type="submit">Update Contact Images</button>
-         
-    </form>
-</div>
-
-
-<!-- FAQ Section -->
-<h2>FAQ Section</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="hidden" name="update_faq_section" value="true">
-
-    <!-- FAQ Metadata Form -->
-    <label>FAQ Section Title:</label>
-    <input type="text" name="faq_section_title" value="{{ faq_section.title }}">
-    <label>FAQ Section Description:</label>
-    <textarea name="faq_section_description">{{ faq_section.description }}</textarea>
-    <label>FAQ Section Image:</label>
-    {% if faq_section.side_image %}
-        <img src="{{ faq_section.side_image.url }}" alt="FAQ Section Image" width="100">
-    {% endif %}
-    <input type="file" name="faq_section_image">
-    <button type="submit">Update FAQ Section</button>
-</form>
-
-<!-- FAQ Items -->
-<h3>Manage FAQ Items</h3>
-<table class="service-table-container">
-    <thead>
-        <tr>
-            <th>Order</th>
-            <th>Question</th>
-            <th>Answer</th>
-            <th>Image</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for faq in faqs %}
-        <tr>
-            <td>
-                <input type="number" name="faq_order_{{ faq.id }}" value="{{ faq.order }}" min="0">
-            </td>
-            <td>
-                <input type="text" name="faq_question_{{ faq.id }}" value="{{ faq.question }}">
-            </td>
-            <td>
-                <textarea name="faq_answer_{{ faq.id }}">{{ faq.answer }}</textarea>
-            </td>
-            <td>
-                {% if faq.image %}
-                <img src="{{ faq.image.url }}" alt="{{ faq.question }}" width="100">
+<div class="container">
+    <h1>Welcome to the Admin Dashboard</h1>
+    <p>Select a section below to manage your content:</p>
+
+    <div class="row">
+        <!-- Hero Section -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Hero Section</h5>
+                    <p class="card-text">
+                        {% if hero_section %}
+                            {{ hero_section.title }}
+                        {% else %}
+                            No Hero Section created yet
+                        {% endif %}
+                    </p>
+                    <a href="{% url 'custom_admin:hero_section' %}" class="btn btn-primary">Manage Hero Section</a>
+                </div>
+            </div>
+        </div>
+        
+
+       <!-- About Section -->
+<div class="col-md-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">About Section</h5>
+            <p class="card-text">
+                {% if about_section %}
+                    {{ about_section.heading }}
+                {% else %}
+                    No About Section created yet
                 {% endif %}
-                <input type="file" name="faq_image_{{ faq.id }}">
-            </td>
-            <td>
-                <a href="{% url 'admin:myApp_faq_change' faq.id %}" class="btn btn-primary">Edit</a>
-                <a href="{% url 'admin:myApp_faq_delete' faq.id %}" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">No FAQs available.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<a href="{% url 'admin:myApp_faq_add' %}" class="btn btn-success">Add New FAQ</a>
+            </p>
+            <a href="{% url 'custom_admin:about_section' %}" class="btn btn-primary">Manage About Section</a>
+        </div>
+    </div>
+</div>
+
+<!-- Products Section -->
+<div class="col-md-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Products</h5>
+            <p class="card-text">
+                {% if products_count %}
+                    Total Products: {{ products_count }}
+                {% else %}
+                    No Products added yet
+                {% endif %}
+            </p>
+            <a href="{% url 'custom_admin:products' %}" class="btn btn-primary">Manage Products</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <!-- Benefits Section -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Benefits Section</h5>
+                <p class="card-text">
+                    {% if benefits_section %}
+                        {{ benefits_section.heading }}
+                    {% else %}
+                        No Benefits Section created yet
+                    {% endif %}
+                </p>
+                <a href="{% url 'custom_admin:benefits_section' %}" class="btn btn-primary">Manage Benefits Section</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Images -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Contact Section Images</h5>
+                <p class="card-text">
+                    {% if contact_images_count %}
+                        Total Images: {{ contact_images_count }}
+                    {% else %}
+                        No Contact Images uploaded yet
+                    {% endif %}
+                </p>
+                <a href="{% url 'custom_admin:contact_images' %}" class="btn btn-primary">Manage Contact Images</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+     <!--             
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">FAQs</h5>
+                <p class="card-text">
+                    {% if faqs_count %}
+                        Total FAQs: {{ faqs_count }}
+                    {% else %}
+                        No FAQs created yet
+                    {% endif %}
+                </p>
+                <a href="{% url 'custom_admin:faqs' %}" class="btn btn-primary">Manage FAQs</a>
+            </div>
+        </div>
+    </div>
+    -->
 
 
+</div>
+
+    </div>
+</div>
 {% endblock %}

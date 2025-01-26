@@ -1,0 +1,164 @@
+{% load static %}
+<style>
+
+
+    /* Styling for the logo container */
+.logo {
+    max-width: 100px; /* Restrict maximum width of the logo container */
+    max-height: 80px; /* Restrict maximum height */
+    overflow: hidden; /* Hide overflowing parts of the image if necessary */
+}
+
+/* Styling for the logo image */
+.logo img {
+    width: 100%; /* Make the image responsive */
+    height: auto; /* Maintain the image's aspect ratio */
+    display: block; /* Remove inline padding or margins */
+    object-fit: contain; /* Ensure the entire logo is visible */
+}
+
+ 
+@media (max-width: 1400px) {
+  header .top-bar .logo img {
+    width: 120px;
+  }
+}
+@media (max-width: 450px) {
+  header .top-bar .logo img {
+    width: 60px;
+    height: 20%;
+  }
+} 
+@media (max-width: 1200px) {
+    header .logo img {
+    content: url("{% static 'assets/img/mobile_logo.png' %}");
+    width: auto; /* Adjust size if necessary for mobile */
+  }
+  header .top-bar ul {
+    display: none;
+  }
+}/* Styling for the header */
+header {
+  background-color: #000; /* Black background */
+  position: fixed; /* Fixed header to prevent content overlap */
+  z-index: 10; /* Ensure header stays on top */
+  width: 100%;
+  top: 0;
+  left: 0;
+  padding: 10px 0; /* Adjust padding for a clean look */
+  color: #fff; /* White text */
+}
+
+/* Styling for the top-bar container */
+header .top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Styling for the logo */
+header .top-bar .logo {
+  max-width: 150px; /* Adjust logo size */
+  overflow: hidden; /* Prevent logo overflow */
+}
+
+header .top-bar .logo img {
+  width: 100%; /* Make logo responsive */
+  height: auto;
+  display: block;
+  object-fit: contain; /* Keep aspect ratio */
+}
+
+/* Styling for the navigation links */
+header .top-bar ul {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+header .top-bar ul li {
+  padding-right: 20px; /* Space between links */
+}
+
+header .top-bar ul li a {
+  font-weight: bold;
+  text-transform: capitalize;
+  color: #ffffff; /* White font color */
+  position: relative;
+  text-decoration: none; /* Remove underline */
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+header .top-bar ul li a:hover {
+  color: #ffcc00; /* Change color on hover */
+  text-shadow: 0 0 5px #ffcc00; /* Glow effect */
+}
+
+header .top-bar ul li a::before {
+  content: "";
+  width: 0%;
+  height: 1px;
+  background-color: #ffcc00; /* Highlight on hover */
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  transition: width 0.3s ease-in-out;
+}
+
+header .top-bar ul li a:hover::before {
+  width: 100%;
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 1200px) {
+  header .top-bar .logo img {
+    content: url("{% static 'assets/img/mobile_logo.png' %}");
+    width: 100px; /* Adjust logo size */
+  }
+  header .top-bar ul {
+    display: none; /* Hide navigation links on smaller screens */
+  }
+}
+
+@media (max-width: 1400px) {
+  header .top-bar ul li {
+    padding-right: 15px; /* Reduce spacing between links */
+  }
+  header .top-bar ul li a {
+    font-size: 14px; /* Smaller font size */
+  }
+}
+
+/* Ensure no content overlaps the header */
+body {
+  padding-top: 80px; /* Add padding equal to the header height */
+}
+
+</style>
+
+<header id="stickyHeader">
+    <div class="container">
+        <div class="top-bar">
+            <div class="logo">
+                <a href="#">
+                    <img alt="Harry Poppers Logo" src="{% static 'assets/img/harrypoppersupdated.png' %}">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'custom_admin:admin_landing_page' %}">Dashboard</a></li>
+                    <li><a href="{% url 'custom_admin:products' %}">Products</a></li>
+                    <li><a href="{% url 'custom_admin:about_section' %}">About</a></li>
+                    <!--             
+                    <li><a href="{% url 'custom_admin:faqs' %}">FAQs</a></li>
+                    -->
+                    <li><a href="{% url 'custom_admin:contact_images' %}">Contact Images</a></li>
+                </ul>
+            </nav>
+            
+             
+        </div>
+    </div>
+</header>

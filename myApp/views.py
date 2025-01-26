@@ -164,23 +164,160 @@ from .models import HeroSection, AboutSection, BenefitsSection, Service, Contact
 from django.shortcuts import render, redirect
 from django.contrib.admin.views.decorators import staff_member_required
 
+from django.shortcuts import render
+from .models import HeroSection, AboutSection, BenefitsSection, Service, ContactImage, FAQ
+
 @staff_member_required
 def admin_landing_page(request):
-    # Fetch the HeroSection, AboutSection, and BenefitsSection objects or create them if they don't exist
+    # Fetching data from the database
     hero_section = HeroSection.objects.first()
     about_section = AboutSection.objects.first()
     benefits_section = BenefitsSection.objects.first()
-    contact_images = ContactImage.objects.all()
-    faq_section = FAQSection.objects.first()
-    faqs = FAQ.objects.all()
+    products_count = Service.objects.count()  # Counting products
+    contact_images_count = ContactImage.objects.count()  # Counting contact images
+    faqs_count = FAQ.objects.count()  # Counting FAQs
 
+    # Passing data to the template
+    context = {
+        'hero_section': hero_section,
+        'about_section': about_section,
+        'benefits_section': benefits_section,
+        'products_count': products_count,
+        'contact_images_count': contact_images_count,
+        'faqs_count': faqs_count,
+    }
+
+    return render(request, 'myApp/customadmin/custom_admin_dashboard.html', context)
+
+from django.shortcuts import redirect
+
+from django.shortcuts import redirect
+
+def redirect_to_custom_admin(request):
+    return redirect('custom_admin:admin_landing_page')
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
+from .models import (
+    Product, HeroSection, Service, AboutSection, BenefitsSection, ContactImage, FAQ, FAQSection
+)
+from .forms import (
+    ProductForm, HeroSectionForm, ServiceForm, AboutSectionForm,
+    BenefitsSectionForm, ContactImageForm, FAQForm, FAQSectionForm
+)
+
+
+# Common utility function for rendering modals
+def render_modal_form(request, template_name, form, context=None):
+    if context is None:
+        context = {}
+    context['form'] = form
+    return render(request, template_name, context)
+
+
+# ----------- Hero Section -----------
+@staff_member_required
+def hero_section(request):
+    # Fetch the Hero Section or create a default one
+    hero_section = HeroSection.objects.first()
     if not hero_section:
         hero_section = HeroSection.objects.create(
             title="Default Title",
             subtitle="Default Subtitle",
-            description="Default description text"
+            description="Default Description"
         )
-    
+
+    # Handle form submission
+    if request.method == 'POST' and 'update_hero' in request.POST:
+        hero_section.title = request.POST.get('title', hero_section.title)
+        hero_section.subtitle = request.POST.get('subtitle', hero_section.subtitle)
+        hero_section.description = request.POST.get('description', hero_section.description)
+        if request.FILES.get('image'):
+            hero_section.image = request.FILES['image']
+        hero_section.save()
+        return redirect('custom_admin:hero_section')  # Reload the page to show updated data
+
+    # Render the template
+    return render(request, 'myApp/customadmin/partials/hero_section.html', {
+        'hero_section': hero_section
+    })
+
+
+# ----------- Products (Add/Edit/Delete) -----------
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Service  # Still referring to the model as "Service"
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def products(request):
+    # Fetch all services, alias as products for the frontend
+    products = Service.objects.all()
+    return render(request, 'myApp/customadmin/partials/products.html', {
+        'products': products  # Alias services as products in the context
+    })
+
+
+@staff_member_required
+def add_product(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        price = request.POST.get('price')
+        image = request.FILES.get('image')
+        alt_text = request.POST.get('alt_text', '')
+        link = request.POST.get('link', '#')
+        description = request.POST.get('description', '')
+
+        Service.objects.create(
+            name=name,
+            price=price,
+            image=image,
+            alt_text=alt_text,
+            link=link,
+            description=description
+        )
+        return redirect('custom_admin:products')
+
+    return render(request, 'myApp/customadmin/partials/add_product_modal.html')
+
+
+@staff_member_required
+def edit_product(request, product_id):
+    product = get_object_or_404(Service, id=product_id)
+
+    if request.method == 'POST':
+        product.name = request.POST.get('name', product.name)
+        product.price = request.POST.get('price', product.price)
+        product.alt_text = request.POST.get('alt_text', product.alt_text)
+        product.link = request.POST.get('link', product.link)
+        product.description = request.POST.get('description', product.description)
+        if request.FILES.get('image'):
+            product.image = request.FILES['image']
+        product.save()
+        return redirect('custom_admin:products')
+
+    return render(request, 'myApp/customadmin/partials/edit_product_modal.html', {
+        'product': product
+    })
+
+
+@staff_member_required
+def delete_product(request, product_id):
+    product = get_object_or_404(Service, id=product_id)
+    if request.method == 'POST':
+        product.delete()
+        return redirect('custom_admin:products')
+
+    return render(request, 'myApp/customadmin/partials/delete_product_modal.html', {
+        'product': product
+    })
+
+# ----------- Other Views for About Section, Benefits Section, etc. -----------
+
+@staff_member_required
+def about_section(request):
+    # Fetch the About Section or create a default one
+    about_section = AboutSection.objects.first()
     if not about_section:
         about_section = AboutSection.objects.create(
             heading="Default Heading",
@@ -189,44 +326,43 @@ def admin_landing_page(request):
             description2="Default Description 2",
             description3="Default Description 3"
         )
-    
-    if not benefits_section:
-        benefits_section = BenefitsSection.objects.create(
-            heading="Default Benefits Heading",
-            subheading="Default Benefits Subheading",
-            description="Default description for benefits",
-            benefit_1="Default Benefit 1",
-            benefit_2="Default Benefit 2",
-            benefit_3="Default Benefit 3",
-            benefit_4="Default Benefit 4"
-        )
-    
-    # Handle HeroSection updates
-    if request.method == 'POST' and 'update_hero' in request.POST:
-        hero_section.title = request.POST.get('title', hero_section.title)
-        hero_section.subtitle = request.POST.get('subtitle', hero_section.subtitle)
-        hero_section.description = request.POST.get('description', hero_section.description)
-        if request.FILES.get('image'):
-            hero_section.image = request.FILES['image']
-        hero_section.save()
-    
-    # Handle AboutSection updates
+
+    # Handle form submission
     if request.method == 'POST' and 'update_about' in request.POST:
         about_section.heading = request.POST.get('heading', about_section.heading)
         about_section.subheading = request.POST.get('subheading', about_section.subheading)
         about_section.description1 = request.POST.get('description1', about_section.description1)
         about_section.description2 = request.POST.get('description2', about_section.description2)
         about_section.description3 = request.POST.get('description3', about_section.description3)
+
         if request.FILES.get('image1'):
             about_section.image1 = request.FILES['image1']
         if request.FILES.get('image2'):
             about_section.image2 = request.FILES['image2']
         if request.FILES.get('image3'):
             about_section.image3 = request.FILES['image3']
+
         about_section.save()
-    
-    # Handle BenefitsSection updates
-    if request.method == 'POST' and 'update_benefits' in request.POST:
+        return redirect('custom_admin:about_section')  # Reload the page to show updated data
+
+    # Render the template
+    return render(request, 'myApp/customadmin/partials/about_section.html', {
+        'about_section': about_section
+    })
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import BenefitsSection
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def benefits_section(request):
+    # Fetch the BenefitsSection instance (assuming there's only one)
+    benefits_section = BenefitsSection.objects.first()
+
+    # If POST request, handle updates
+    if request.method == 'POST':
         benefits_section.heading = request.POST.get('heading', benefits_section.heading)
         benefits_section.subheading = request.POST.get('subheading', benefits_section.subheading)
         benefits_section.description = request.POST.get('description', benefits_section.description)
@@ -237,40 +373,64 @@ def admin_landing_page(request):
         if request.FILES.get('image'):
             benefits_section.image = request.FILES['image']
         benefits_section.save()
+        return redirect('custom_admin:benefits_section')
 
-        contact_images = ContactImage.objects.all()
-
-    # Handle form submission for ContactImage updates
-    if request.method == 'POST' and 'update_faq_section' in request.POST:
-        faq_section.title = request.POST.get('faq_section_title', faq_section.title)
-        faq_section.description = request.POST.get('faq_section_description', faq_section.description)
-        if request.FILES.get('faq_section_image'):
-            faq_section.side_image = request.FILES['faq_section_image']
-        faq_section.save()
-
-    # Handle FAQ items updates
-    if request.method == 'POST' and 'update_faq_items' in request.POST:
-        for faq_id in request.POST.getlist('faq_ids'):
-            faq = FAQ.objects.get(id=faq_id)
-            faq.question = request.POST.get(f'faq_question_{faq_id}', faq.question)
-            faq.answer = request.POST.get(f'faq_answer_{faq_id}', faq.answer)
-            faq.order = request.POST.get(f'faq_order_{faq_id}', faq.order)
-            if f'faq_image_{faq_id}' in request.FILES:
-                faq.image = request.FILES[f'faq_image_{faq_id}']
-            faq.save()
-        
-
-    # Context for the template
-    context = {
-        'hero_section': hero_section,
-        'about_section': about_section,
+    return render(request, 'myApp/customadmin/partials/benefits_section.html', {
         'benefits_section': benefits_section,
-        'services': Service.objects.all(),
+    })
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import ContactImage
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def contact_images(request):
+    # Fetch all contact images
+    contact_images = ContactImage.objects.all()
+
+    if request.method == 'POST' and 'add_image' in request.POST:
+        # Add new contact image
+        image = request.FILES.get('image')
+        alt_text = request.POST.get('alt_text', 'Default Alt Text')
+        ContactImage.objects.create(image=image, alt_text=alt_text)
+        return redirect('custom_admin:contact_images')
+
+    return render(request, 'myApp/customadmin/partials/contact_images.html', {
         'contact_images': contact_images,
-        'faq_section': faq_section,
-        'faqs': faqs,
-    }
-    return render(request, 'myApp/customadmin/custom_admin_dashboard.html', context)
+    })
+
+@staff_member_required
+def edit_contact_image(request, image_id):
+    contact_image = get_object_or_404(ContactImage, id=image_id)
+    if request.method == 'POST':
+        contact_image.alt_text = request.POST.get('alt_text', contact_image.alt_text)
+        if request.FILES.get('image'):
+            contact_image.image = request.FILES['image']
+        contact_image.save()
+        return redirect('custom_admin:contact_images')
+    return render(request, 'myApp/customadmin/partials/edit_contact_image_modal.html', {
+        'contact_image': contact_image,
+    })
+
+@staff_member_required
+def delete_contact_image(request, image_id):
+    contact_image = get_object_or_404(ContactImage, id=image_id)
+    if request.method == 'POST':
+        contact_image.delete()
+        return redirect('custom_admin:contact_images')
 
 
+def faqs(request):
+    faqs = FAQ.objects.all()
+    faq_section = FAQSection.objects.first()
 
+    if request.method == 'POST':
+        form = FAQForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+        return JsonResponse({'success': False, 'errors': form.errors})
+
+    context = {'faqs': faqs, 'faq_section': faq_section, 'form': FAQForm()}
+    return render(request, 'myApp/customadmin/partials/faqs.html', context)

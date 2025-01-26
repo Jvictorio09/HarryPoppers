@@ -1,0 +1,49 @@
+{% extends 'myApp/customadmin/base.html' %}
+
+{% load static %}
+
+{% block title %}Hero Section Management{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-4">Manage Hero Section</h1>
+    
+    <!-- Hero Section Form -->
+    <form method="post" enctype="multipart/form-data" class="shadow p-4 bg-light rounded">
+        {% csrf_token %}
+        <input type="hidden" name="update_hero" value="true">
+
+        <div class="mb-3">
+            <label for="title" class="form-label">Title:</label>
+            <input type="text" name="title" id="title" class="form-control" 
+                   value="{{ hero_section.title }}" placeholder="Enter Hero Section Title" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="subtitle" class="form-label">Subtitle:</label>
+            <input type="text" name="subtitle" id="subtitle" class="form-control" 
+                   value="{{ hero_section.subtitle }}" placeholder="Enter Hero Section Subtitle" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description:</label>
+            <textarea name="description" id="description" class="form-control" 
+                      placeholder="Enter Hero Section Description" rows="4" required>{{ hero_section.description }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="image" class="form-label">Current Image:</label>
+            {% if hero_section.image %}
+                <img src="{{ hero_section.image.url }}" alt="Hero Section Image" class="img-fluid mb-2" style="max-width: 100%; height: auto;">
+            {% else %}
+                <p class="text-muted">No image uploaded yet.</p>
+            {% endif %}
+            <label for="image" class="form-label">Upload New Image:</label>
+            <input type="file" name="image" id="image" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{% url 'custom_admin:admin_landing_page' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </form>
+</div>
+{% endblock %}

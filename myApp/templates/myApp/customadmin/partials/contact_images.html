@@ -1,0 +1,137 @@
+{% extends 'myApp/customadmin/base.html' %}
+
+{% load static %}
+
+{% block title %}Manage Contact Images{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-4">Manage Contact Section Images</h1>
+
+    <!-- Add New Image Button -->
+    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addImageModal">
+        Add New Image
+    </button>
+
+    <!-- Images Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Image</th>
+                    <th>Alt Text</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for image in contact_images %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        {% if image.image %}
+                        <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" style="max-width: 100px; height: auto;">
+                        {% else %}
+                        <span class="text-muted">No image uploaded</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ image.alt_text }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editImageModal-{{ image.id }}">Edit</button>
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteImageModal-{{ image.id }}">Delete</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No contact images available. Add a new image above!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Image Modal -->
+<div class="modal fade" id="addImageModal" tabindex="-1" aria-labelledby="addImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" enctype="multipart/form-data" action="{% url 'custom_admin:contact_images' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addImageModalLabel">Add New Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Upload Image</label>
+                        <input type="file" name="image" id="image" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="alt_text" class="form-label">Alt Text</label>
+                        <input type="text" name="alt_text" id="alt_text" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="add_image" class="btn btn-success">Add Image</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Image Modal -->
+{% for image in contact_images %}
+<div class="modal fade" id="editImageModal-{{ image.id }}" tabindex="-1" aria-labelledby="editImageModalLabel-{{ image.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" enctype="multipart/form-data" action="{% url 'custom_admin:edit_contact_image' image.id %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editImageModalLabel-{{ image.id }}">Edit Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="alt_text-{{ image.id }}" class="form-label">Alt Text</label>
+                        <input type="text" name="alt_text" id="alt_text-{{ image.id }}" class="form-control" value="{{ image.alt_text }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="image-{{ image.id }}" class="form-label">Upload New Image</label>
+                        <input type="file" name="image" id="image-{{ image.id }}" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Delete Image Modal -->
+{% for image in contact_images %}
+<div class="modal fade" id="deleteImageModal-{{ image.id }}" tabindex="-1" aria-labelledby="deleteImageModalLabel-{{ image.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'custom_admin:delete_contact_image' image.id %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteImageModalLabel-{{ image.id }}">Delete Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this image?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

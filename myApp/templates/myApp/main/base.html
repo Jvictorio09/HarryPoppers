@@ -37,6 +37,82 @@
     display: block; /* Remove inline padding or margins */
     object-fit: contain; /* Ensure the entire logo is visible */
 }
+
+
+header {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  padding-top: 20px;
+}
+header .top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+@media (max-width: 1400px) {
+  header .top-bar .logo img {
+    width: 120px;
+  }
+}
+@media (max-width: 450px) {
+  header .top-bar .logo img {
+    width: 60px;
+    height: 20%;
+  }
+}
+header .top-bar ul {
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 1200px) {
+    header .logo img {
+    content: url("{% static 'assets/img/mobile_logo.png' %}");
+    width: auto; /* Adjust size if necessary for mobile */
+  }
+  header .top-bar ul {
+    display: none;
+  }
+}
+header .top-bar ul li {
+  padding-right: 50px;
+}
+@media (max-width: 1400px) {
+  header .top-bar ul li {
+    padding-right: 30px;
+  }
+}
+header .top-bar ul li a {
+  font-weight: bold;
+  text-transform: capitalize;
+  color: #ffffff;
+  position: relative;
+  transition: 0.5s ease-in-out;
+}
+header .top-bar ul li a::before {
+  content: "";
+  width: 0%;
+  height: 1px;
+  background-color: #fff;
+  position: absolute;
+  bottom: 0;
+  transition: 0.5s ease-in-out;
+}
+header .top-bar ul li a:hover::before {
+  width: 100%;
+}
+@media (max-width: 1400px) {
+  header .top-bar ul li a {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 1200px) {
+    .hero-section .hero-text > span {
+        padding: 8px 20px;
+        font-size: 12px;
+    }
+}
 </style>
 
 <body class="two">

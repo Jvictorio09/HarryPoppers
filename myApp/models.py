@@ -54,9 +54,11 @@ class Service(models.Model):
     image = models.ImageField(upload_to='', help_text="Image of the service")
     alt_text = models.CharField(max_length=150, help_text="Alt text for the image", default="Service image")
     link = models.URLField(default="#", help_text="URL for the service")
+    description = models.TextField(blank=True, null=True, help_text="Description of the service")  # Add this field
 
     def __str__(self):
         return self.name
+
 
 
 from django.db import models
