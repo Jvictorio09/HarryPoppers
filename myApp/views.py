@@ -465,16 +465,68 @@ def delete_contact_image(request, image_id):
         return redirect('custom_admin:contact_images')
 
 
-def faqs(request):
-    faqs = FAQ.objects.all()
-    faq_section = FAQSection.objects.first()
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.contrib import messages
+from .models import FAQ, FAQSection
+from .forms import FAQForm, FAQSectionForm  # Ensure FAQSectionForm is created for handling FAQSection data
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.contrib import messages
+from .models import FAQ, FAQSection
+from .forms import FAQForm, FAQSectionForm
+
+
+def manage_faqs(request):
+    faqs = FAQ.objects.all()  # Retrieve all FAQs
+    faq_section = FAQSection.objects.first()  # Retrieve the FAQ Section (only one expected)
+
+    # Create default forms
+    faq_form = FAQForm()  # For adding a new FAQ
+    faq_section_form = FAQSectionForm(instance=faq_section)  # For editing the FAQ Section
+    faq_forms = {faq.id: FAQForm(instance=faq) for faq in faqs}  # Forms for editing each FAQ
 
     if request.method == 'POST':
-        form = FAQForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'success': True})
-        return JsonResponse({'success': False, 'errors': form.errors})
+        # Add a new FAQ
+        if 'add_faq' in request.POST:
+            faq_form = FAQForm(request.POST, request.FILES)
+            if faq_form.is_valid():
+                faq_form.save()
+                messages.success(request, "FAQ added successfully!")
+                return redirect('custom_admin:manage_faqs')
 
-    context = {'faqs': faqs, 'faq_section': faq_section, 'form': FAQForm()}
-    return render(request, 'myApp/customadmin/partials/faqs.html', context)
+        # Edit an existing FAQ
+        elif 'edit_faq' in request.POST:
+            faq_id = request.POST.get('faq_id')
+            faq = get_object_or_404(FAQ, id=faq_id)
+            faq_form = FAQForm(request.POST, request.FILES, instance=faq)
+            if faq_form.is_valid():
+                faq_form.save()
+                messages.success(request, "FAQ updated successfully!")
+                return redirect('custom_admin:manage_faqs')
+
+        # Delete an FAQ
+        elif 'delete_faq' in request.POST:
+            faq_id = request.POST.get('faq_id')
+            faq = get_object_or_404(FAQ, id=faq_id)
+            faq.delete()
+            messages.success(request, "FAQ deleted successfully!")
+            return redirect('custom_admin:manage_faqs')
+
+        # Edit the FAQ Section
+        elif 'edit_faq_section' in request.POST:
+            faq_section_form = FAQSectionForm(request.POST, request.FILES, instance=faq_section)
+            if faq_section_form.is_valid():
+                faq_section_form.save()
+                messages.success(request, "FAQ Section updated successfully!")
+                return redirect('custom_admin:manage_faqs')
+
+    # Context data for the template
+    context = {
+        'faqs': faqs,
+        'faq_section': faq_section,
+        'faq_form': faq_form,
+        'faq_section_form': faq_section_form,
+        'faq_forms': faq_forms,  # Include forms for each FAQ
+    }
+    return render(request, 'myApp/customadmin/partials/faq_section.html', context)

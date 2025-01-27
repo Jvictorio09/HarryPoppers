@@ -1,0 +1,160 @@
+{% extends 'myApp/customadmin/base.html' %}
+{% load static custom_filters %}
+
+{% block title %}Manage FAQs{% endblock %}
+
+{% block content %}
+<style>
+    .btn-success, .btn-primary {
+        border-radius: 0.25rem;
+        padding: 0.5rem 1rem;
+    }
+</style>
+<div class="container">
+    <h1 class="mt-4 mb-4">Manage FAQs</h1>
+
+    <!-- Action Buttons -->
+    <div class="mb-4 d-flex gap-2">
+        <!-- Add New FAQ Button -->
+        <button type="button" class="btn btn-success d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#addFAQModal">
+            <i class="bi bi-plus-circle me-2"></i> Add New FAQ
+        </button>
+
+        <!-- Edit FAQ Section Header Button -->
+        <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#editFAQSectionModal">
+            <i class="bi bi-pencil me-2"></i> Edit FAQ Section Header
+        </button>
+    </div>
+
+    <!-- FAQ Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th>Answer</th>
+                    <th>Order</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for faq in faqs %}
+                <tr>
+                    <td class="text-center align-middle">{{ forloop.counter }}</td>
+                    <td class="align-middle">{{ faq.question }}</td>
+                    <td class="align-middle text-truncate" style="max-width: 300px;">{{ faq.answer|truncatewords:20 }}</td>
+                    <td class="text-center align-middle">{{ faq.order }}</td>
+                    <td class="text-center align-middle">
+                        {% if faq.image %}
+                        <img src="{{ faq.image.url }}" alt="FAQ Image" class="img-thumbnail" style="max-width: 100px; height: auto;">
+                        {% else %}
+                        <span class="text-muted">No image</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center align-middle">
+                        <div class="d-flex gap-2 justify-content-center">
+                            <!-- Edit Button -->
+                            <button type="button" class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#editFAQModal-{{ faq.id }}">
+                                <i class="bi bi-pencil"></i> Edit
+                            </button>
+                            <!-- Delete Button -->
+                            <button type="button" class="btn btn-danger btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#deleteFAQModal-{{ faq.id }}">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No FAQs available. Add a new FAQ above!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modals -->
+    <!-- Edit FAQ Section Modal -->
+    <div class="modal fade" id="editFAQSectionModal" tabindex="-1" aria-labelledby="editFAQSectionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="edit_faq_section" value="true">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editFAQSectionModalLabel">Edit FAQ Section Header</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ faq_section_form.as_p }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add FAQ Modal -->
+    <div class="modal fade" id="addFAQModal" tabindex="-1" aria-labelledby="addFAQModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="add_faq" value="true">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addFAQModalLabel">
+                            <i class="bi bi-plus-circle"></i> Add New FAQ
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ faq_form.as_p }}
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between gap-2">
+                        <button type="submit" class="btn btn-success d-flex align-items-center gap-1">
+                            <i class="bi bi-check-circle"></i> Add FAQ
+                        </button>
+                        <button type="button" class="btn btn-secondary d-flex align-items-center gap-1" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle"></i> Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit FAQ and Delete FAQ Modals -->
+    {% for faq in faqs %}
+    <!-- Edit FAQ Modal -->
+    <div class="modal fade" id="editFAQModal-{{ faq.id }}" tabindex="-1" aria-labelledby="editFAQModalLabel-{{ faq.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="edit_faq" value="true">
+                    <input type="hidden" name="faq_id" value="{{ faq.id }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editFAQModalLabel-{{ faq.id }}">
+                            Edit FAQ - {{ faq.question }}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ faq_forms|get_item:faq.id|safe }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
