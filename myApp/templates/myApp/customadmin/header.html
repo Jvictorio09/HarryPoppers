@@ -136,55 +136,102 @@ body {
   padding-top: 80px; /* Add padding equal to the header height */
 }
 
+/* Right section container */
 .right-section ul {
-        display: flex;
-        align-items: center;
-        margin: 0;
-        padding: 0;
-        list-style: none;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.right-section ul li {
+    margin-left: 10px; /* Space between buttons */
+}
+
+/* Change Password Button */
+.btn-change-password {
+    font-weight: bold;
+    text-transform: capitalize;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1;
+    display: inline-block;
+    min-width: 120px;
+    text-align: center;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    background-color: transparent;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-change-password:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* View Site Button */
+.btn-view-site {
+    font-weight: bold;
+    text-transform: capitalize;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1;
+    display: inline-block;
+    min-width: 120px;
+    text-align: center;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    background-color: transparent;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-view-site:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Logout Button */
+.btn-logout {
+    font-weight: bold;
+    text-transform: capitalize;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1;
+    display: inline-block;
+    min-width: 120px;
+    text-align: center;
+    background-color: #ffcc00;
+    border: none;
+    color: #000000;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-logout:hover {
+    background-color: #e0b800;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .right-section ul {
+        flex-direction: column; /* Stack buttons vertically */
+        align-items: flex-start;
     }
 
     .right-section ul li {
-        margin-left: 10px; /* Space between buttons */
+        margin: 5px 0; /* Space between buttons on mobile */
     }
 
-    .right-section .btn {
-        font-weight: bold;
-        padding: 5px 10px;
-        border-radius: 5px;
+    .btn-change-password,
+    .btn-view-site,
+    .btn-logout {
+        width: 100%; /* Full-width buttons on mobile */
+        text-align: center;
     }
-
-    .right-section .btn-warning {
-        color: #fff;
-        background-color: #ffcc00;
-        border: none;
-    }
-
-    .right-section .btn-warning:hover {
-        background-color: #e0b800;
-    }
-
-    .right-section .btn-outline-light {
-        border: 1px solid #fff;
-        color: #fff;
-    }
-
-    .right-section .btn-outline-light:hover {
-        background-color: #fff;
-        color: #000;
-    }
-
-    /* Adjust header layout for mobile devices */
-    @media (max-width: 768px) {
-        .right-section ul {
-            flex-direction: column;
-        }
-
-        .right-section ul li {
-            margin-left: 0;
-            margin-bottom: 10px;
-        }
-    }
+}
 
 </style>
 <header id="stickyHeader">
@@ -209,18 +256,99 @@ body {
 
             <!-- Right Section: View Site and Logout -->
             <div class="right-section">
-                <ul>
-                    <li>
-                        <a href="/" target="_blank" class="btn btn-outline-light btn-sm">View Site</a>
-                    </li>
-                    <li>
-                        <form method="POST" action="{% url 'logout' %}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-warning btn-sm">Logout</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
+              <ul>
+                  <li>
+                      <button type="button" class="btn-change-password btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                          Change Password
+                      </button>
+                  </li>
+                  <li>
+                      <a href="/" target="_blank" class="btn-view-site btn-sm">View Site</a>
+                  </li>
+                  <li>
+                      <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                          {% csrf_token %}
+                          <button type="submit" class="btn-logout btn-sm">Logout</button>
+                      </form>
+                  </li>
+              </ul>
+          </div>
+          
+          
         </div>
     </div>
 </header>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <form id="changePasswordForm" method="POST">
+                  {% csrf_token %}
+                  <div class="mb-3">
+                      <label for="old_password" class="form-label">Current Password</label>
+                      <input type="password" name="old_password" id="old_password" class="form-control" required>
+                  </div>
+                  <div class="mb-3">
+                      <label for="new_password1" class="form-label">New Password</label>
+                      <input type="password" name="new_password1" id="new_password1" class="form-control" required>
+                  </div>
+                  <div class="mb-3">
+                      <label for="new_password2" class="form-label">Confirm New Password</label>
+                      <input type="password" name="new_password2" id="new_password2" class="form-control" required>
+                  </div>
+                  <button type="submit" class="btn-primary">Update Password</button>
+              </form>
+              <div id="changePasswordResponse" class="mt-3"></div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const changePasswordForm = document.getElementById("changePasswordForm");
+      const changePasswordResponse = document.getElementById("changePasswordResponse");
+
+      changePasswordForm.addEventListener("submit", async function (event) {
+          event.preventDefault();
+          changePasswordResponse.innerHTML = ""; // Clear previous messages
+
+          const formData = new FormData(changePasswordForm);
+
+          try {
+              const response = await fetch("{% url 'custom_admin:change_password' %}", {
+                  method: "POST",
+                  headers: {
+                      "X-CSRFToken": "{{ csrf_token }}"
+                  },
+                  body: formData,
+              });
+
+              const data = await response.json();
+
+              if (response.ok && data.status === "success") {
+                  changePasswordResponse.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                  changePasswordForm.reset();
+                  setTimeout(() => {
+                      const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+                      modal.hide(); // Close the modal after a successful update
+                  }, 2000);
+              } else {
+                  const errors = JSON.parse(data.errors);
+                  Object.values(errors).forEach(error => {
+                      changePasswordResponse.innerHTML += `<div class="alert alert-danger">${error[0].message}</div>`;
+                  });
+              }
+          } catch (error) {
+              console.error(error);
+              changePasswordResponse.innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
+          }
+      });
+  });
+</script>

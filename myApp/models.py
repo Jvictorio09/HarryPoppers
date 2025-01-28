@@ -47,6 +47,7 @@ def resize_image(sender, instance, **kwargs):
             img = img.resize((627, 717), Image.Resampling.LANCZOS)  # Use LANCZOS instead of ANTIALIAS
             img.save(img_path)  # Save the resized image back to the same file
 
+from django.utils.text import slugify
     
 class Service(models.Model):
     name = models.CharField(max_length=100, help_text="Name of the service (e.g., '10ml Poppers')")
@@ -55,9 +56,15 @@ class Service(models.Model):
     alt_text = models.CharField(max_length=150, help_text="Alt text for the image", default="Service image")
     link = models.URLField(default="#", help_text="URL for the service")
     description = models.TextField(blank=True, null=True, help_text="Description of the service")  # Add this field
+    slug = models.SlugField(unique=True, blank=True, null=True) 
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 
 

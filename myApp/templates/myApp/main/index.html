@@ -234,10 +234,8 @@
       <div class="row">
         {% for service in services %}
         <div class="col-lg-3 col-sm-6 product-item {% if forloop.counter > 4 %}hidden{% endif %}">
-            <!-- Wrap the entire product-container in an <a> tag -->
-            <a href="{{ service.link }}" class="product-link-wrapper">
+            <a href="{% url 'product_detail' service.slug %}" class="product-link-wrapper">
                 <div class="product-container position-relative">
-                    <!-- Ribbon -->
                     <span class="ribbon">Buy Me!</span>
                     <figure class="imgg">
                         <img src="{{ service.image.url }}" alt="{{ service.alt_text }}" class="product-image">
@@ -257,6 +255,7 @@
       {% endif %}
   </div>
 </section>
+
 
 
 

@@ -1,0 +1,117 @@
+{% extends 'myApp/main/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* General padding to avoid content being hidden by the navbar */
+    .service-container {
+        padding-top: 120px;
+        padding-bottom: 80px;
+        padding-left: 15px; /* Add horizontal padding */
+        padding-right: 15px;
+    }
+
+    /* Styling for the service image */
+    .service-img {
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        max-width: 100%;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+    }
+
+    /* Styling for the content */
+    .service-content {
+        text-align: center;
+        padding-left: 15px; /* Add some inner padding for text content */
+        padding-right: 15px;
+    }
+
+    .service-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .service-price {
+        font-size: 2rem;
+        color: #ffcc00;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .service-description {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: #555;
+        margin-bottom: 30px;
+    }
+
+    /* Styling for the "Buy Now" button */
+    .btn-buy {
+        background-color: #007bff;
+        color: #fff;
+        padding: 12px 30px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn-buy:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 768px) {
+        .service-container {
+            padding-top: 80px;
+            padding-bottom: 40px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .service-title {
+            font-size: 2rem;
+        }
+
+        .service-price {
+            font-size: 1.8rem;
+        }
+
+        .service-description {
+            font-size: 1rem;
+        }
+
+        .btn-buy {
+            font-size: 1rem;
+            padding: 10px 20px;
+        }
+    }
+
+    /* Max-width constraint for larger screens */
+    .service-container .row {
+        max-width: 1140px; /* Set a max width for the row */
+        margin: 0 auto; /* Center the row horizontally */
+    }
+</style>
+
+<div class="service-container">
+    <div class="row align-items-center">
+        <div class="col-md-6 text-center">
+            <img src="{{ service.image.url }}" alt="{{ service.alt_text }}" class="service-img">
+        </div>
+        <div class="col-md-6 service-content">
+            <h1 class="service-title">{{ service.name }}</h1>
+            <h3 class="service-price">₱{{ service.price|floatformat:0 }}</h3>
+            <p class="service-description">{{ service.description }}</p>
+            <a href="{{ service.link }}" class="btn-buy" target="_blank">Buy Now</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

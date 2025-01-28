@@ -95,7 +95,13 @@ def index(request):
     })
 
 
-     
+from django.shortcuts import render, get_object_or_404
+from .models import Service
+
+def product_detail(request, slug):
+    service = get_object_or_404(Service, slug=slug)
+    return render(request, "myApp/main/product_detail.html", {"service": service})
+
 
 
 def send_confirmation_email(name, email):
@@ -530,3 +536,81 @@ def manage_faqs(request):
         'faq_forms': faq_forms,  # Include forms for each FAQ
     }
     return render(request, 'myApp/customadmin/partials/faq_section.html', context)
+
+ 
+
+from django.contrib.auth.models import User
+from django.utils.crypto import get_random_string
+from django.core.mail import send_mail
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def create_user_profile(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+
+        # Check if user already exists
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({'status': 'error', 'message': 'User with this email already exists.'}, status=400)
+
+        # Generate a random temporary password
+        temporary_password = get_random_string(8)
+
+        # Create the user
+        user = User.objects.create_user(
+            username=email,  # Set email as the username
+            email=email,
+            password=temporary_password,
+            first_name=first_name,
+            last_name=last_name,
+        )
+        user.is_staff = True  # Grant staff access (optional)
+        user.save()
+
+        # Send email to the user
+        subject = "Access Granted: Temporary Password"
+        message = f"""
+        Hi {first_name},
+
+        Your access to the admin dashboard has been created. Below are your credentials:
+
+        Username: {email}
+        Temporary Password: {temporary_password}
+
+        Please log in and update your password immediately.
+
+        Regards,
+        Admin Team
+        """
+        send_mail(
+            subject,
+            message,
+            'harrypopperstore@gmail.com',  # Replace with your email
+            [email],
+            fail_silently=False,
+        )
+
+        return JsonResponse({'status': 'success', 'message': 'User profile created and email sent.'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.http import JsonResponse
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, request.user)  # Keep the user logged in after password change
+            return JsonResponse({'status': 'success', 'message': 'Password updated successfully!'})
+        else:
+            errors = form.errors.as_json()
+            return JsonResponse({'status': 'error', 'errors': errors}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+

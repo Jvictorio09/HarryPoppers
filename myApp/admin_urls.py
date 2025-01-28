@@ -18,4 +18,6 @@ urlpatterns = [
     path('faqs/', views.manage_faqs, name='manage_faqs'),
     path("login/", views.admin_login, name="login"),
     path("logout/", views.admin_logout, name="logout"),
+    path("manage-access/", views.create_user_profile, name="manage_access"),
+    path('ajax/change-password/', views.change_password, name='change_password'),
 ]
