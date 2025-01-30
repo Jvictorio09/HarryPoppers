@@ -58,6 +58,9 @@ class Service(models.Model):
     description = models.TextField(blank=True, null=True, help_text="Description of the service")  # Add this field
     slug = models.SlugField(unique=True, blank=True, null=True) 
 
+    STRENGTH_LEVELS = [(25, "25%"), (50, "50%"), (75, "75%"), (100, "100%")]
+    strength = models.IntegerField(choices=STRENGTH_LEVELS, default=50, help_text="Strength level of the product")
+
     def __str__(self):
         return self.name
     

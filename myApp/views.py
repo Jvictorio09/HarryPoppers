@@ -293,11 +293,10 @@ def hero_section(request):
         'hero_section': hero_section
     })
 
-
 # ----------- Products (Add/Edit/Delete) -----------
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Service  # Still referring to the model as "Service"
-from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 
 @login_required
 def products(request):
@@ -318,13 +317,19 @@ def add_product(request):
         link = request.POST.get('link', '#')
         description = request.POST.get('description', '')
 
+        # Get strength value, default to 50% if not provided
+        strength = int(request.POST.get('strength', 50))  
+        if strength not in [25, 50, 75, 100]:  # Ensure valid input
+            strength = 50  
+
         Service.objects.create(
             name=name,
             price=price,
             image=image,
             alt_text=alt_text,
             link=link,
-            description=description
+            description=description,
+            strength=strength  # Add strength field
         )
         return redirect('custom_admin:products')
 
@@ -341,8 +346,14 @@ def edit_product(request, product_id):
         product.alt_text = request.POST.get('alt_text', product.alt_text)
         product.link = request.POST.get('link', product.link)
         product.description = request.POST.get('description', product.description)
+
         if request.FILES.get('image'):
             product.image = request.FILES['image']
+
+        # Update strength if provided
+        strength = request.POST.get('strength', product.strength)
+        product.strength = int(strength) if strength in ['25', '50', '75', '100'] else product.strength
+
         product.save()
         return redirect('custom_admin:products')
 
