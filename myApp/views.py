@@ -16,6 +16,12 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.shortcuts import render, redirect
 from .forms import NewContactForm  # Import the new contact form
+from django.shortcuts import render, redirect, get_object_or_404
+from myApp.models import Category
+from django.contrib import messages
+
+ 
+
 
 def index(request):
     # Fetch static content for the page
@@ -208,6 +214,8 @@ def admin_logout(request):
     logout(request)
     return redirect("custom_admin:login")
 
+ 
+ 
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 
@@ -295,15 +303,18 @@ def hero_section(request):
 
 # ----------- Products (Add/Edit/Delete) -----------
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import Service  # Still referring to the model as "Service"
+from .models import Service, Category  # ✅ Import Category model
 from django.contrib.auth.decorators import login_required
 
 @login_required
 def products(request):
-    # Fetch all services, alias as products for the frontend
+    # Fetch all services (products) and categories
     products = Service.objects.all()
+    categories = Category.objects.all()  # ✅ Fetch categories
+
     return render(request, 'myApp/customadmin/partials/products.html', {
-        'products': products  # Alias services as products in the context
+        'products': products,
+        'categories': categories  # ✅ Pass categories to template
     })
 
 
@@ -317,11 +328,16 @@ def add_product(request):
         link = request.POST.get('link', '#')
         description = request.POST.get('description', '')
 
-        # Get strength value, default to 50% if not provided
+        # ✅ Get selected category
+        category_id = request.POST.get('category')
+        category = get_object_or_404(Category, id=category_id) if category_id else None
+
+        # ✅ Get strength value, default to 50%
         strength = int(request.POST.get('strength', 50))  
         if strength not in [25, 50, 75, 100]:  # Ensure valid input
             strength = 50  
 
+        # ✅ Save new product with category
         Service.objects.create(
             name=name,
             price=price,
@@ -329,11 +345,16 @@ def add_product(request):
             alt_text=alt_text,
             link=link,
             description=description,
-            strength=strength  # Add strength field
+            strength=strength,
+            category=category  # ✅ Assign category
         )
+
         return redirect('custom_admin:products')
 
-    return render(request, 'myApp/customadmin/partials/add_product_modal.html')
+    categories = Category.objects.all()  # ✅ Pass categories for dropdown
+    return render(request, 'myApp/customadmin/partials/add_product_modal.html', {
+        'categories': categories
+    })
 
 
 @login_required
@@ -350,28 +371,180 @@ def edit_product(request, product_id):
         if request.FILES.get('image'):
             product.image = request.FILES['image']
 
-        # Update strength if provided
+        # ✅ Update strength
         strength = request.POST.get('strength', product.strength)
         product.strength = int(strength) if strength in ['25', '50', '75', '100'] else product.strength
+
+        # ✅ Update category
+        category_id = request.POST.get('category')
+        product.category = get_object_or_404(Category, id=category_id) if category_id else product.category
 
         product.save()
         return redirect('custom_admin:products')
 
+    categories = Category.objects.all()  # ✅ Pass categories for dropdown
     return render(request, 'myApp/customadmin/partials/edit_product_modal.html', {
-        'product': product
+        'product': product,
+        'categories': categories
     })
 
+ 
 
+from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
+from .models import Category
+
+@csrf_exempt  # Allows AJAX to send POST requests
+def add_category_ajax(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            name = data.get("name")
+
+            # Check if category already exists
+            if Category.objects.filter(name=name).exists():
+                return JsonResponse({"status": "error", "message": "Category already exists"}, status=400)
+
+            # Create new category
+            category = Category.objects.create(name=name)
+            return JsonResponse({"status": "success", "category_id": category.id})
+
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)
+
+    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
+from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Category
+
+# ✅ View to display Manage Categories Modal
+def manage_categories(request):
+    categories = Category.objects.all()
+    return render(request, 'myApp/customadmin/partials/products.html', {'categories': categories})
+
+# ✅ Add New Category (Standard Form Submission)
+def add_category(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            if Category.objects.filter(name=name).exists():
+                messages.error(request, "Category already exists!")
+            else:
+                Category.objects.create(name=name)
+                messages.success(request, "Category added successfully!")
+    return redirect('custom_admin:products')  # Redirect to the products page where categories are managed
+
+# ✅ Edit Category
+def edit_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            category.name = name
+            category.save()
+            messages.success(request, "Category updated successfully!")
+    return redirect('custom_admin:products')
+
+# ✅ Delete Category
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    category.delete()
+    messages.success(request, "Category deleted successfully!")
+    return redirect('custom_admin:products')
+
+# ✅ Add New Category via AJAX
+@csrf_exempt  # Allow AJAX requests
+def add_category_ajax(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            name = data.get("name")
+
+            if not name:
+                return JsonResponse({"status": "error", "message": "Category name cannot be empty"}, status=400)
+
+            # Check if category already exists
+            if Category.objects.filter(name=name).exists():
+                return JsonResponse({"status": "error", "message": "Category already exists"}, status=400)
+
+            # Create the category
+            category = Category.objects.create(name=name)
+            return JsonResponse({"status": "success", "category_id": category.id})
+
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)
+
+    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Service
+
+@csrf_exempt  # Allow AJAX requests
 @login_required
 def delete_product(request, product_id):
-    product = get_object_or_404(Service, id=product_id)
-    if request.method == 'POST':
-        product.delete()
-        return redirect('custom_admin:products')
+    if request.method == "POST":
+        try:
+            product = get_object_or_404(Service, id=product_id)
+            product.delete()
+            return JsonResponse({"status": "success", "message": "Product deleted successfully!"})
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
 
-    return render(request, 'myApp/customadmin/partials/delete_product_modal.html', {
-        'product': product
-    })
+    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+
+
+ 
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+import json
+
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+from .models import Service
+
+@csrf_exempt
+def toggle_product_active(request, product_id):
+    if request.method == "POST":
+        product = get_object_or_404(Service, id=product_id)
+        product.is_active = not product.is_active  # Toggle the value
+        product.save()
+        return JsonResponse({"success": True, "is_active": product.is_active})
+    
+    return JsonResponse({"success": False, "message": "Invalid request"}, status=400)
+
+from django.http import JsonResponse
+import json
+from django.contrib.auth.decorators import login_required
+from .models import Service
+
+@login_required
+def mass_delete_products(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            product_ids = data.get("product_ids", [])
+            if not product_ids:
+                return JsonResponse({"status": "error", "message": "No products selected."}, status=400)
+
+            deleted_count, _ = Service.objects.filter(id__in=product_ids).delete()
+
+            return JsonResponse({"status": "success", "deleted": deleted_count})
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)
+    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+
 
 # ----------- Other Views for About Section, Benefits Section, etc. -----------
 

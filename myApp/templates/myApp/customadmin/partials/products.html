@@ -26,39 +26,137 @@
 .strength-75 { background-color: yellow; width: 75%; }
 .strength-100 { background-color: green; width: 100%; }
 
+
+/* ✅ Add Product Button */
+.btn-add-product {
+    background-color: #28a745;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    color: whitesmoke;
+}
+.btn-add-product:hover {
+    background-color: #218838;
+}
+
+/* ✅ Manage Categories Button */
+.btn-manage-categories {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    color: white;
+}
+.btn-manage-categories:hover {
+    background-color: #0056b3;
+}
+
+/* ✅ Mass Delete Button */
+.btn-mass-delete {
+    background-color: #ff4444;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+.btn-mass-delete:hover {
+    background-color: #cc0000;
+}
+
+/* ✅ Edit Product Button */
+.btn-edit-product {
+    background-color: #ffc107;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+.btn-edit-product:hover {
+    background-color: #e0a800;
+}
+
+/* ✅ Delete Product Button */
+.btn-delete-product {
+    background-color: #dc3545;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    color: white;
+}
+.btn-delete-product:hover {
+    background-color: #c82333;
+}
+
+/* ✅ Toggle Active Switch */
+.toggle-active-product {
+    width: 40px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 50px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+.toggle-active-product:checked {
+    background-color: #28a745;
+}
+
 </style>
 <div class="container">
     <h1 class="mt-4 mb-4">Manage Products</h1>
 
     <!-- Add New Product Button -->
-    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">
+    <button type="button" class="btn-add-product" data-bs-toggle="modal" data-bs-target="#addProductModal">
         Add New Product
     </button>
+    <button type="button" class="btn-manage-categories" data-bs-toggle="modal" data-bs-target="#manageCategoriesModal">
+        Manage Categories
+    </button>
+
+    <!-- ✅ Hidden CSRF Token for AJAX Requests -->
+    <input type="hidden" id="csrf_token" value="{{ csrf_token }}">
 
     <!-- Product Table -->
-    <div class="table-responsive">
+    <div class="table-responsive" style="padding-top: 10px;">
         <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>
+                    <th><input type="checkbox" id="selectAll"></th>  <!-- Select All Checkbox -->
                     <th>#</th>
                     <th>Name</th>
+                    <th>Category</th>
                     <th>Price</th>
                     <th>Image</th>
                     <th>Strength</th>
+                    <th>Active</th>  <!-- ✅ New Column for Active/Inactive -->
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for product in products %}
-                <tr>
+                <tr id="product-row-{{ product.id }}"> <!-- ✅ Add ID -->
+                    <td><input type="checkbox" class="product-checkbox" value="{{ product.id }}"></td>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ product.name }}</td>
+                    <td>
+                        {% if product.category %}
+                            {{ product.category.name }}
+                        {% else %}
+                            <span class="text-muted">No Category</span>
+                        {% endif %}
+                    </td>
                     <td>₱{{ product.price }}</td>
                     <td>
                         {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.alt_text }}" style="max-width: 100px; height: auto;">
+                            <img src="{{ product.image.url }}" alt="{{ product.alt_text }}" style="max-width: 100px; height: auto;">
                         {% else %}
-                        <span class="text-muted">No image uploaded</span>
+                            <span class="text-muted">No image uploaded</span>
                         {% endif %}
                     </td>
                     <td>
@@ -68,19 +166,31 @@
                         <small>{{ product.strength }}%</small>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editProductModal-{{ product.id }}">Edit</button>
-                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteProductModal-{{ product.id }}">Delete</button>
+                        <input type="checkbox" class="toggle-active-product" 
+                            data-id="{{ product.id }}" {% if product.is_active %}checked{% endif %}>
+                    </td>
+                    <td>
+                        <button type="button" class="btn-edit-product" data-bs-toggle="modal" data-bs-target="#editProductModal-{{ product.id }}">Edit</button>
+                        <button type="button" class="btn-delete-product" data-id="{{ product.id }}">Delete</button>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center">No products available. Add a new product above!</td>
+                    <td colspan="9" class="text-center">No products available. Add a new product above!</td>
                 </tr>
                 {% endfor %}
             </tbody>
+            
         </table>
     </div>
+    
+    <!-- Mass Delete Button -->
+    <button id="deleteSelected" class="btn-mass-delete">Delete Selected</button>
+    
 </div>
+
+
+ 
 
 <!-- Add Product Modal -->
 <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
@@ -93,6 +203,15 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select name="category" id="category" class="form-control">
+                            <option value="" selected disabled>Select a Category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>                    
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
                         <input type="text" name="name" id="name" class="form-control" required>
@@ -126,6 +245,7 @@
                         <label for="image" class="form-label">Upload Image</label>
                         <input type="file" name="image" id="image" class="form-control">
                     </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Add Product</button>
@@ -135,6 +255,101 @@
         </div>
     </div>
 </div>
+
+ 
+<!-- Manage Categories Modal -->
+<div class="modal fade" id="manageCategoriesModal" tabindex="-1" aria-labelledby="manageCategoriesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- Using a larger modal for better UI -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="manageCategoriesModalLabel">Manage Categories</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Display Existing Categories -->
+                <h6>Existing Categories</h6>
+                <ul class="list-group mb-3">
+                    {% for category in categories %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ category.name }}
+                            <div>
+                                <!-- Edit Button -->
+                                <button type="button" class="btn-edit-product" data-bs-toggle="modal" data-bs-target="#editCategoryModal-{{ category.id }}">
+                                    Edit
+                                </button>
+                                <!-- Delete Button -->
+                                <button type="button" class="btn-delete-product" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal-{{ category.id }}">
+                                    Delete
+                                </button>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">No categories available.</li>
+                    {% endfor %}
+                </ul>
+
+                <!-- Add New Category -->
+                <h6>Add New Category</h6>
+                <form id="addCategoryForm" method="post" action="{% url 'custom_admin:add_category' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="new_category_name" class="form-label">Category Name</label>
+                        <input type="text" name="name" id="new_category_name" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Add Category</button>
+                    <div id="categoryMessage" class="mt-2"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for category in categories %}
+<div class="modal fade" id="editCategoryModal-{{ category.id }}" tabindex="-1" aria-labelledby="editCategoryModalLabel-{{ category.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'custom_admin:edit_category' category.id %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCategoryModalLabel-{{ category.id }}">Edit Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="edit_category_name-{{ category.id }}" class="form-label">Category Name</label>
+                    <input type="text" name="name" id="edit_category_name-{{ category.id }}" class="form-control" value="{{ category.name }}" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% for category in categories %}
+<div class="modal fade" id="deleteCategoryModal-{{ category.id }}" tabindex="-1" aria-labelledby="deleteCategoryModalLabel-{{ category.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'custom_admin:delete_category' category.id %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCategoryModalLabel-{{ category.id }}">Delete Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete <strong>{{ category.name }}</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
 
 
 <!-- Edit Product Modals -->
@@ -149,6 +364,16 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="category-{{ product.id }}" class="form-label">Category</label>
+                        <select name="category" id="category-{{ product.id }}" class="form-control">
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if product.category.id == category.id %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>                    
                     <div class="mb-3">
                         <label for="name-{{ product.id }}" class="form-label">Name</label>
                         <input type="text" name="name" id="name-{{ product.id }}" class="form-control" value="{{ product.name }}" required>
@@ -219,5 +444,153 @@
 </div>
 {% endfor %}
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const csrfToken = document.getElementById("csrf_token").value; // ✅ Get CSRF Token
+        
+        // ✅ Add Category via AJAX
+        document.getElementById("createCategoryForm").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent full-page reload
+    
+            var categoryName = document.getElementById("new_category_name").value;
+            var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            fetch("{% url 'custom_admin:add_category_ajax' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
+                },
+                body: JSON.stringify({ name: categoryName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    // Show success message
+                    document.getElementById("categoryMessage").innerHTML = 
+                        '<div class="alert alert-success">Category added successfully!</div>';
+                    
+                    // Update the dropdown with the new category
+                    var categoryDropdowns = document.querySelectorAll("#category");
+                    categoryDropdowns.forEach(function(dropdown) {
+                        var option = document.createElement("option");
+                        option.value = data.category_id;
+                        option.textContent = categoryName;
+                        dropdown.appendChild(option);
+                    });
+    
+                    // Reset input field
+                    document.getElementById("new_category_name").value = "";
+    
+                    // Close the modal after a delay
+                    setTimeout(() => {
+                        var modal = new bootstrap.Modal(document.getElementById("addCategoryModal"));
+                        modal.hide();
+                    }, 1500);
+                } else {
+                    document.getElementById("categoryMessage").innerHTML = 
+                        '<div class="alert alert-danger">Error: ' + data.message + '</div>';
+                }
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const csrfToken = document.getElementById("csrf_token").value; // ✅ Get CSRF Token
+
+    document.querySelectorAll(".toggle-active-product").forEach(function (checkbox) {
+        checkbox.addEventListener("change", function () {
+            let productId = this.getAttribute("data-id");
+            let isChecked = this.checked;
+
+            fetch(`/custom-admin/toggle-active/${productId}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Product ${productId} is now ${data.is_active ? 'ACTIVE' : 'INACTIVE'}`);
+                } else {
+                    alert("Failed to update product status.");
+                    this.checked = !this.checked;
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                this.checked = !this.checked;
+            });
+        });
+    });
+});
+
+document.getElementById("deleteSelected").addEventListener("click", function() {
+    const selectedProducts = Array.from(document.querySelectorAll(".product-checkbox:checked"))
+        .map(checkbox => checkbox.value);
+    
+    if (selectedProducts.length === 0) {
+        alert("No products selected!");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to delete the selected products?")) {
+        return;
+    }
+
+    fetch("{% url 'custom_admin:mass_delete_products' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": document.getElementById("csrf_token").value
+        },
+        body: JSON.stringify({ product_ids: selectedProducts })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("Products deleted successfully!");
+            location.reload();  // ✅ Refresh to update the list
+        } else {
+            alert("Error: " + data.message);
+        }
+    });
+});
+ 
+document.querySelectorAll(".btn-delete-product").forEach(button => {
+    button.addEventListener("click", function() {
+        const productId = this.getAttribute("data-id");
+
+        if (!confirm("Are you sure you want to delete this product?")) return;
+
+        fetch(`/custom-admin/delete-product/${productId}/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": document.getElementById("csrf_token").value
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                alert("Product deleted successfully!");
+                document.getElementById(`product-row-${productId}`).remove();  // ✅ Remove row without reload
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    });
+});
+ 
+
+    </script>
+    
 
 {% endblock %}

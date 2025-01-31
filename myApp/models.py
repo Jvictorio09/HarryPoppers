@@ -47,23 +47,41 @@ def resize_image(sender, instance, **kwargs):
             img = img.resize((627, 717), Image.Resampling.LANCZOS)  # Use LANCZOS instead of ANTIALIAS
             img.save(img_path)  # Save the resized image back to the same file
 
+from django.db import models
 from django.utils.text import slugify
-    
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True, help_text="Category name (e.g., 'Strong Poppers', 'Beginner Friendly')")
+    slug = models.SlugField(unique=True, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+
 class Service(models.Model):
     name = models.CharField(max_length=100, help_text="Name of the service (e.g., '10ml Poppers')")
     price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price of the service (e.g., 950.00)")
     image = models.ImageField(upload_to='', help_text="Image of the service")
     alt_text = models.CharField(max_length=150, help_text="Alt text for the image", default="Service image")
     link = models.URLField(default="#", help_text="URL for the service")
-    description = models.TextField(blank=True, null=True, help_text="Description of the service")  # Add this field
-    slug = models.SlugField(unique=True, blank=True, null=True) 
+    description = models.TextField(blank=True, null=True, help_text="Description of the service")
+    slug = models.SlugField(unique=True, blank=True, null=True)
 
     STRENGTH_LEVELS = [(25, "25%"), (50, "50%"), (75, "75%"), (100, "100%")]
     strength = models.IntegerField(choices=STRENGTH_LEVELS, default=50, help_text="Strength level of the product")
 
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, help_text="Select a category for the product")  # ❌ No default for now!
+
+    is_active = models.BooleanField(default=True, help_text="Uncheck to hide the product from listings.")
+
     def __str__(self):
         return self.name
-    
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)

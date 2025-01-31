@@ -326,8 +326,14 @@
 
                   <!-- Product Image -->
                   <figure class="imgg">
-                      <img src="{{ service.image.url }}" alt="{{ service.alt_text }}" class="product-image">
-                  </figure>
+                    {% if service.image %}
+                        <img src="{{ service.image.url }}" alt="{{ service.alt_text }}" class="product-image">
+                    {% else %}
+                        <img src="{% static 'assets/img/mobile_logo.png' %}" alt="No Image Available" class="product-image">
+                    {% endif %}
+                </figure>
+                
+                
                   <div class="product-link">{{ service.name }} - ₱{{ service.price|floatformat:0 }}</div>
                 </div>
 
