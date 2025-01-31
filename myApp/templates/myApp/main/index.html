@@ -55,6 +55,9 @@
     overflow: hidden; /* Prevent content from overflowing */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
     transition: transform 0.3s ease; /* Add hover effect */
+    height: 350px;
+    width: 90%;
+    margin-bottom: 8px;
 }
 
 .product-container:hover {
@@ -196,6 +199,79 @@
     }
 }
 
+/* Battery Container - Matches the Example */
+/* Battery Wrapper - Keeps Cap & Battery Together */
+.battery-wrapper {
+    position: absolute;
+    top: 10px; /* Align the whole battery system */
+    left: 10px; /* Keep it aligned left */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Battery Container */
+.strength-battery {
+    position: relative; /* Allows absolute positioning inside */
+    width: 42px; /* Slightly wider battery */
+    height: 80px; /* Battery height */
+    background-color: #333; /* Battery dark outline */
+    border-radius: 6px;
+    border: 2px solid #222;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column-reverse; /* Fill from bottom to top */
+    align-items: center;
+    justify-content: flex-end;
+    box-shadow: inset 0px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Battery Cap - Small Top Part */
+.battery-cap {
+    width: 18px; /* Slightly wider cap */
+    height: 7px; /* Taller cap */
+    background-color: #222;
+    border-radius: 3px;
+    margin-bottom: 2px; /* Space between cap and battery */
+}
+
+/* Strength Fill - Exact Gradient Look */
+.strength-fill {
+    width: 100%;
+    transition: height 0.4s ease-in-out;
+}
+
+/* Strength Levels with Gradient */
+.strength-25 { background: linear-gradient(to top, #D84315, #FF6F00); height: 25%; }
+.strength-50 { background: linear-gradient(to top, #FF8C00, #FFC107); height: 50%; }
+.strength-75 { background: linear-gradient(to top, #FFD60A, #AEEA00); height: 75%; }
+.strength-100 { background: linear-gradient(to top, #34C759, #00C853); height: 100%; }
+
+/* Strength Label - Inside Battery */
+.strength-text {
+    position: absolute;
+    bottom: 4px;
+    width: 100%;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Red Flag at Max Strength */
+.strength-100::after {
+    content: "🚩"; /* Flag icon */
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: red;
+}
+
 
 </style>
   <!-- Hero Section -->
@@ -235,13 +311,26 @@
         {% for service in services %}
         <div class="col-lg-3 col-sm-6 product-item {% if forloop.counter > 4 %}hidden{% endif %}">
             <a href="{% url 'product_detail' service.slug %}" class="product-link-wrapper">
+                 <!-- Product Container -->
                 <div class="product-container position-relative">
-                    <span class="ribbon">Buy Me!</span>
-                    <figure class="imgg">
-                        <img src="{{ service.image.url }}" alt="{{ service.alt_text }}" class="product-image">
-                    </figure>
-                    <div class="product-link">{{ service.name }} - ₱{{ service.price|floatformat:0 }}</div>
+                  <div class="battery-wrapper">
+                    <div class="battery-cap"></div>  <!-- Battery Cap -->
+                    <div class="strength-battery">
+                        <div class="strength-fill strength-{{ service.strength }}"></div>
+                        <div class="strength-text">{{ service.strength }}%</div>
+                    </div>
+                 </div>
+                
+                
+                
+
+                  <!-- Product Image -->
+                  <figure class="imgg">
+                      <img src="{{ service.image.url }}" alt="{{ service.alt_text }}" class="product-image">
+                  </figure>
+                  <div class="product-link">{{ service.name }} - ₱{{ service.price|floatformat:0 }}</div>
                 </div>
+
             </a>
         </div>
         {% empty %}
