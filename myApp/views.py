@@ -27,7 +27,7 @@ def index(request):
     # Fetch static content for the page
     contact_images = ContactImage.objects.all()[:5]
     hero_section = HeroSection.objects.first()
-    services = Service.objects.all()
+    services = Service.objects.filter(is_active=True) 
     faqs = FAQ.objects.all()
     faq_section = FAQSection.objects.first()
     about_section = AboutSection.objects.first()
