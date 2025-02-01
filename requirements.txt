@@ -21,3 +21,5 @@ sqlparse==0.4.4  # Use an up-to-date version instead of pinned source
 tzdata==2023.3  # Specify the latest release of tzdata if necessary
 urllib3==2.2.3
 whitenoise==6.6.0
+cloudinary==1.37.0
+django-cloudinary-storage==0.3.0

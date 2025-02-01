@@ -1,6 +1,9 @@
 from django.db import models
-
-from django.db import models
+from cloudinary.models import CloudinaryField
+from django.utils.text import slugify
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from PIL import Image
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -21,10 +24,7 @@ class HeroSection(models.Model):
     title = models.CharField(max_length=200, help_text="Hero section title")
     subtitle = models.TextField(help_text="Hero section subtitle")
     description = models.TextField(help_text="Hero section description")
-    image = models.ImageField(
-        upload_to='',  # Images will be uploaded to the 'hero_images/' folder inside MEDIA_ROOT
-        help_text="Hero section image"
-    )
+    image = CloudinaryField('image', help_text="Hero section image")
     button_text = models.CharField(max_length=50, help_text="Button text", default="Shop Now")
     button_url = models.URLField(help_text="Button link", default="#")
 
@@ -32,20 +32,48 @@ class HeroSection(models.Model):
         return self.title
 
 
-# Signal to resize the image after the HeroSection object is saved
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import cloudinary.uploader
+
+from io import BytesIO
+from django.core.files.base import ContentFile
+import cloudinary.uploader
+import requests
 from PIL import Image
 
 @receiver(post_save, sender=HeroSection)
 def resize_image(sender, instance, **kwargs):
     """
-    Resize the uploaded image to 627x717 pixels.
+    Resize the uploaded image for Cloudinary storage.
     """
-    if instance.image:
-        img_path = instance.image.path  # Get the file path of the uploaded image
-        with Image.open(img_path) as img:
-            # Resize the image to 627x717 while maintaining quality
-            img = img.resize((627, 717), Image.Resampling.LANCZOS)  # Use LANCZOS instead of ANTIALIAS
-            img.save(img_path)  # Save the resized image back to the same file
+    if instance.image and instance.image.url:
+        try:
+            # ✅ Download the image from Cloudinary URL
+            response = requests.get(instance.image.url, stream=True)
+            response.raise_for_status()
+
+            # ✅ Open the image from bytes
+            img = Image.open(BytesIO(response.content))
+
+            # ✅ Resize image
+            img = img.resize((627, 717), Image.Resampling.LANCZOS)
+
+            # ✅ Convert image to bytes for re-upload
+            img_io = BytesIO()
+            img.save(img_io, format="JPEG", quality=85)
+            img_io.seek(0)
+
+            # ✅ Upload resized image to Cloudinary
+            upload_result = cloudinary.uploader.upload(img_io, folder="hero_images")
+
+            # ✅ Update model with new image URL
+            instance.image = upload_result["secure_url"]
+            instance.save(update_fields=["image"])
+
+        except Exception as e:
+            print(f"Image resizing failed: {e}")
+
 
 from django.db import models
 from django.utils.text import slugify
@@ -66,7 +94,7 @@ class Category(models.Model):
 class Service(models.Model):
     name = models.CharField(max_length=100, help_text="Name of the service (e.g., '10ml Poppers')")
     price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price of the service (e.g., 950.00)")
-    image = models.ImageField(upload_to='', help_text="Image of the service")
+    image = CloudinaryField('image', help_text="Image of the service")
     alt_text = models.CharField(max_length=150, help_text="Alt text for the image", default="Service image")
     link = models.URLField(default="#", help_text="URL for the service")
     description = models.TextField(blank=True, null=True, help_text="Description of the service")
@@ -97,9 +125,9 @@ class AboutSection(models.Model):
     description1 = models.TextField(help_text="First description paragraph")
     description2 = models.TextField(help_text="Second description paragraph")
     description3 = models.TextField(help_text="Third description paragraph")
-    image1 = models.ImageField(upload_to='about_images/', help_text="First image")
-    image2 = models.ImageField(upload_to='about_images/', help_text="Second image")
-    image3 = models.ImageField(upload_to='about_images/', help_text="Third image")
+    image1 = CloudinaryField('image', help_text="First image")  # ✅ Cloudinary Storage
+    image2 = CloudinaryField('image', help_text="Second image")  # ✅ Cloudinary Storage
+    image3 = CloudinaryField('image', help_text="Third image")  # ✅ Cloudinary Storage
 
     def __str__(self):
         return self.heading
@@ -115,7 +143,7 @@ class BenefitsSection(models.Model):
     benefit_2 = models.CharField(max_length=200, help_text="Second benefit")
     benefit_3 = models.CharField(max_length=200, help_text="Third benefit")
     benefit_4 = models.CharField(max_length=200, help_text="Fourth benefit")
-    image = models.ImageField(upload_to='benefits_images/', help_text="Image for the benefits section")
+    image = CloudinaryField('image', help_text="Image for the benefits section")  # ✅ Cloudinary Storage
 
     def __str__(self):
         return self.heading
@@ -124,7 +152,7 @@ class BenefitsSection(models.Model):
 from django.db import models
 
 class ContactImage(models.Model):
-    image = models.ImageField(upload_to='contact_images/', help_text="Image for the Contact section")
+    image = CloudinaryField('image', help_text="Image for the Contact section")  # ✅ Cloudinary Storage
     alt_text = models.CharField(max_length=150, help_text="Alt text for the image")
 
     def __str__(self):
@@ -134,7 +162,7 @@ class ContactImage(models.Model):
 from django.db import models
 
 class ContactImage(models.Model):
-    image = models.ImageField(upload_to='contact_images/', help_text="Image for the Contact section")
+    image = CloudinaryField('image', help_text="Image for the Contact section")  # ✅ Cloudinary Storage
     alt_text = models.CharField(max_length=150, help_text="Alt text for the image")
 
     def __str__(self):
@@ -146,9 +174,7 @@ class FAQ(models.Model):
     question = models.CharField(max_length=255, help_text="FAQ question")
     answer = models.TextField(help_text="FAQ answer")
     order = models.PositiveIntegerField(default=0, help_text="Order of the FAQ")
-    image = models.ImageField(
-        upload_to='faq_images/', blank=True, null=True, help_text="Optional image for the FAQ"
-    )
+    image = CloudinaryField('image', blank=True, null=True, help_text="Optional image for the FAQ")  # ✅ Cloudinary Storage
 
     class Meta:
         ordering = ['order']  # FAQs will be ordered by their 'order' field
@@ -160,9 +186,7 @@ class FAQ(models.Model):
 class FAQSection(models.Model):
     title = models.CharField(max_length=255, help_text="Main title for the FAQ section")
     description = models.TextField(help_text="Short description for the FAQ section")
-    side_image = models.ImageField(
-        upload_to='faq_images/', blank=True, null=True, help_text="Image to display in the FAQ section"
-    )
+    side_image = CloudinaryField('image', blank=True, null=True, help_text="Image to display in the FAQ section")  # ✅ Cloudinary Storage
 
     def __str__(self):
         return self.title

@@ -293,7 +293,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="hero-img">
-                    <img src="{{ hero_section.image.url|default:'https://placehold.co/627x717' }}" alt="Default Image">
+                  <img src="{% if hero_section.image %}{{ hero_section.image.url }}{% else %}https://placehold.co/627x717{% endif %}" alt="Hero Section Image">
                 </div>
             </div>
         </div>
@@ -309,39 +309,33 @@
       </div>
       <div class="row">
         {% for service in services %}
-        <div class="col-lg-3 col-sm-6 product-item {% if forloop.counter > 4 %}hidden{% endif %}">
-            <a href="{% url 'product_detail' service.slug %}" class="product-link-wrapper">
-                 <!-- Product Container -->
-                <div class="product-container position-relative">
-                  <div class="battery-wrapper">
-                    <div class="battery-cap"></div>  <!-- Battery Cap -->
-                    <div class="strength-battery">
-                        <div class="strength-fill strength-{{ service.strength }}"></div>
-                        <div class="strength-text">{{ service.strength }}%</div>
-                    </div>
-                 </div>
-                
-                
-                
-
-                  <!-- Product Image -->
-                  <figure class="imgg">
-                    {% if service.image %}
-                        <img src="{{ service.image.url }}" alt="{{ service.alt_text }}" class="product-image">
-                    {% else %}
-                        <img src="{% static 'assets/img/mobile_logo.png' %}" alt="No Image Available" class="product-image">
-                    {% endif %}
-                </figure>
-                
-                
-                  <div class="product-link">{{ service.name }} - ₱{{ service.price|floatformat:0 }}</div>
-                </div>
-
-            </a>
-        </div>
-        {% empty %}
-        <p class="text-center">No services available at the moment.</p>
-        {% endfor %}
+          {% if service.is_active %}
+              <div class="col-lg-3 col-sm-6 product-item {% if forloop.counter > 4 %}hidden{% endif %}">
+                  <a href="{% url 'product_detail' service.slug %}" class="product-link-wrapper">
+                      <!-- Product Container -->
+                      <div class="product-container position-relative">
+                          <div class="battery-wrapper">
+                              <div class="battery-cap"></div>
+                              <div class="strength-battery">
+                                  <div class="strength-fill strength-{{ service.strength }}"></div>
+                                  <div class="strength-text">{{ service.strength }}%</div>
+                              </div>
+                          </div>
+                          <figure class="imgg">
+                              {% if service.image %}
+                                  <img src="{{ service.image.url }}" alt="{{ service.alt_text }}" class="product-image">
+                              {% else %}
+                                  <img src="{% static 'assets/img/mobile_logo.png' %}" alt="No Image Available" class="product-image">
+                              {% endif %}
+                          </figure>
+                          <div class="product-link">{{ service.name }} - ₱{{ service.price|floatformat:0 }}</div>
+                      </div>
+                  </a>
+              </div>
+          {% endif %}
+          {% empty %}
+              <p class="text-center">No services available at the moment.</p>
+          {% endfor %}
       </div>
       {% if services|length > 4 %}
       <div class="text-center mt-3">
@@ -359,17 +353,14 @@
       <div class="row">
           <div class="col-lg-6">
               <div class="about-img-two">
-                <img src="{{ about_section.image1.url|default:'https://placehold.co/334x316' }}" 
-                class="about1" 
-                alt="About Image 1" 
-                style="width: 334px; height: 316px;">
+                <img src="{% if about_section.image1 %}{{ about_section.image1.url }}{% else %}https://placehold.co/334x316{% endif %}" class="about1" alt="About Image 1" style="width: 334px; height: 316px;">
            
-           <img src="{{ about_section.image2.url|default:'https://placehold.co/306x288' }}" 
+           <img src="{% if about_section.image2 %}{{ about_section.image2.url }}{% else %}https://placehold.co/334x316{% endif %}" 
                 class="about2" 
                 alt="About Image 2" 
                 style="width: 306px; height: 288px;">
            
-           <img src="{{ about_section.image3.url|default:'https://placehold.co/333x316' }}" 
+           <img src="{% if about_section.image3 %}{{ about_section.image3.url }}{% else %}https://placehold.co/334x316{% endif %}"
                 class="about3" 
                 alt="About Image 3" 
                 style="width: 333px; height: 316px;">
