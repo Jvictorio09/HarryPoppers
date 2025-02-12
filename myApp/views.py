@@ -108,6 +108,9 @@ def product_detail(request, slug):
     service = get_object_or_404(Service, slug=slug)
     return render(request, "myApp/main/product_detail.html", {"service": service})
 
+def checkout(request):
+    return render(request, "myApp/main/checkoutoptions.html")
+
 
 
 def send_confirmation_email(name, email):

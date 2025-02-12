@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Harry Poppers - Authentic UK-Made Poppers{% endblock %}</title>
+    <link rel="icon" href="{% static 'assets/img/2.png' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/swiper.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/jquery.fancybox.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/font/flaticon_mycollection.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Harry Poppers - Authentic UK-made products. We offer fresh and high-quality poppers with discreet packaging. Freebies with every order.">
+    <meta name="keywords" content="Harry Poppers, Poppers, Authentic Poppers, UK-made Poppers, Cheap Poppers, Fresh Poppers, Philippines, Poppers for sale">
+    <meta name="author" content="Harry Poppers">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{% static 'css/order-links-style.css' %}">
+</head>
+<style>
+    /* Order Links Container */
+.order-links-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.order-links-heading {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Tagline Styling */
+.order-links-tagline {
+    font-size: 18px;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* General Button Styling */
+.order-links-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    max-width: 320px;
+    padding: 14px;
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.3s ease-in-out;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    margin-bottom: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Button Hover Animation */
+.order-links-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Icons */
+.order-links-button i {
+    font-size: 22px;
+    margin-right: 10px;
+}
+
+/* Unique Button Colors */
+.order-links-telegram { background: linear-gradient(135deg, #0088cc, #005b99); }
+.order-links-shopee { background: linear-gradient(135deg, #ee4d2d, #b8321e); }
+.order-links-lazada { background: linear-gradient(135deg, #0074E8, #005bb5); }
+.order-links-twitter { background: linear-gradient(135deg, #1DA1F2, #0c85d0); }
+.order-links-facebook { background: linear-gradient(135deg, #1877F2, #125ab6); }
+
+/* Hover Effects */
+.order-links-telegram:hover { background: linear-gradient(135deg, #005b99, #003f73); }
+.order-links-shopee:hover { background: linear-gradient(135deg, #b8321e, #8a2514); }
+.order-links-lazada:hover { background: linear-gradient(135deg, #005bb5, #00408c); }
+.order-links-twitter:hover { background: linear-gradient(135deg, #0c85d0, #086aaf); }
+.order-links-facebook:hover { background: linear-gradient(135deg, #125ab6, #0c3e89); }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .order-links-button {
+        font-size: 16px;
+        padding: 12px;
+        width: 90%;
+    }
+}
+
+</style>
+
+<body>
+
+    <div class="container order-links-container text-center my-5">
+        <h1 class="order-links-heading mb-3">You can order on these links:</h1>
+
+        <!-- Tagline Section -->
+        <p class="order-links-tagline">
+            🎉 <strong>Discreet packaging</strong> and freebies with every order! Get your poppers delivered safely. 🎉
+        </p>
+
+        <div class="d-flex flex-column align-items-center">
+            <!-- Telegram -->
+            <a href="https://t.me/Harrypoppers18 " target="_blank" class="order-links-button order-links-telegram">
+                <i class="bi bi-telegram"></i> Telegram @Harrypoppers18
+            </a>
+
+            <!-- Shopee -->
+            <a href="https://shopee.ph/shop/1306463897" target="_blank" class="order-links-button order-links-shopee">
+                <i class="bi bi-bag"></i> Shopee shop/1306463897
+            </a>
+
+            <!-- Lazada -->
+            <a href="https://www.lazada.com.ph/shop/harryscnt/?spm=a2o4l.pdp_revamp.seller.1.332d62b3W3mk1r&itemId=4596821506&channelSource=pdp" target="_blank" class="order-links-button order-links-lazada">
+                <i class="bi bi-cart"></i> Lazada @harryscnt
+            </a>
+
+            <!-- Twitter/X -->
+            <a href="https://x.com/harrypoppers18" target="_blank" class="order-links-button order-links-twitter">
+                <i class="bi bi-twitter"></i> Twitter @harrypoppers18
+            </a>
+
+            <!-- Facebook -->
+            <a href="https://www.facebook.com/profile.php?id=61558563162192" target="_blank" class="order-links-button order-links-facebook">
+                <i class="bi bi-facebook"></i> Facebook
+            </a>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/swiper.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+    <script src="{% static 'assets/js/sweetalert.min.js' %}"></script>
+    <script src="{% static 'assets/js/contact.js' %}"></script>
+
+</body>
+
+</html>
