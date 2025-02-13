@@ -102,7 +102,7 @@
 
 /* Product image styling */
 .product-image {
-    max-width: 100%;
+    max-width: 55%;
     height: auto;
     border-radius: 8px;
     object-fit: cover;
@@ -272,6 +272,105 @@
     color: red;
 }
 
+/* Discreet Package Section */
+.discreet-package-container {
+    background-color: #f9f9f9;
+    padding: 60px 20px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.08);
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Section Heading */
+.discreet-package-heading {
+    font-size: 30px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Add Lock Emoji Before Heading */
+.discreet-package-heading::before {
+    content: "🔒";
+    font-size: 24px;
+}
+
+/* Discreet Packaging Image */
+.discreet-package-image {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+/* Accordion Styling */
+.discreet-package-accordion {
+    max-width: 750px;
+    margin: 30px auto 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+}
+
+/* Accordion Item */
+.discreet-package-item {
+    background: white;
+    border: none;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Accordion Button */
+.discreet-package-button {
+    background: linear-gradient(135deg, #0074E8, #005bb5);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Button Hover Effect */
+.discreet-package-button:hover {
+    background: linear-gradient(135deg, #005bb5, #00408c);
+    transform: scale(1.02);
+}
+
+/* Accordion Body */
+.discreet-package-body {
+    font-size: 16px;
+    padding: 18px;
+    background: #ffffff;
+    border-radius: 12px;
+    color: #444;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .discreet-package-container {
+        padding: 40px 15px;
+    }
+    
+    .discreet-package-heading {
+        font-size: 24px;
+    }
+
+    .discreet-package-button {
+        font-size: 16px;
+        padding: 12px;
+    }
+}
 
 </style>
   <!-- Hero Section -->
@@ -285,7 +384,7 @@
                     <h1 style="font-size: 60px;"><span>{{ hero_section.title|default:"Default Title" }}</span></h1>
                     <p>{{ hero_section.description|default:"Default description text" }}</p>
                     <div class="btnvideo">
-                        <a href="{{ hero_section.button_url|default:'#' }}" class="btn">
+                        <a href="https://www.harrypoppers.net/harrypoppers/checkout/" class="btn">
                             {{ hero_section.button_text|default:"Shop Now" }}
                         </a>
                     </div>
@@ -299,6 +398,46 @@
         </div>
     </div>
 </section>
+<div class="container discreet-package-container my-5">
+  <h2 class="discreet-package-heading">Discreet Packaging: Your Privacy is Our Priority</h2>
+  
+  <!-- Image Section -->
+  <div class="text-center">
+      <img src="{% static 'assets/img/discreetpackaging.png' %}" alt="Discreet Packaging" class="discreet-package-image">
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="accordion discreet-package-accordion mt-4" id="discreetPackageFAQ">
+      <!-- Question 1 -->
+      <div class="accordion-item discreet-package-item">
+          <h2 class="accordion-header">
+              <button class="accordion-button collapsed discreet-package-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                  Is My Order Discreet?
+              </button>
+          </h2>
+          <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#discreetPackageFAQ">
+              <div class="accordion-body discreet-package-body">
+                  ✅ Yes, 100% discreet packaging. Your privacy is our top priority. Your order will be sent in plain, unmarked packaging, ensuring complete confidentiality. 
+              </div>
+          </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="accordion-item discreet-package-item">
+          <h2 class="accordion-header">
+              <button class="accordion-button collapsed discreet-package-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                  What will be displayed on my bank statement?
+              </button>
+          </h2>
+          <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#discreetPackageFAQ">
+              <div class="accordion-body discreet-package-body">
+                  💳 At Harry Poppers, we ensure confidential transactions. If you pay via bank transfer, your statement will display "HP Trading Ltd". If you use card payments, it will appear as "HPerfumeScent". No mention of our website for maximum discretion.
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
 
 
 <section id="services">
