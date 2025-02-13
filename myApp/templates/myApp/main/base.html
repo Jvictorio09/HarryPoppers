@@ -113,9 +113,151 @@ header .top-bar ul li a:hover::before {
         font-size: 12px;
     }
 }
+
+/* Floating Telegram Button */
+.floating-telegram-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: #0088cc;
+    color: white;
+    font-size: 28px;
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    text-decoration: none;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+    z-index: 1000; /* Ensures it's always above content */
+}
+
+/* Hover Effect */
+/* Floating Telegram Button Wrapper */
+.floating-telegram-wrapper {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+/* Floating Telegram Button */
+.floating-telegram-button {
+    background: #0088cc;
+    color: white;
+    font-size: 28px;
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    text-decoration: none;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    animation: pulse-animation 2s infinite;
+}
+
+/* Hover Effect */
+.floating-telegram-button:hover {
+    background: #006fa5;
+    transform: scale(1.1);
+}
+
+/* Icon Styling */
+.floating-telegram-button i {
+    color: white;
+}
+
+/* Tooltip Message */
+.telegram-tooltip {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    display: none;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    margin-left: 60px;
+}
+
+/* Show Tooltip on Hover */
+.floating-telegram-wrapper:hover .telegram-tooltip {
+    display: block;
+}
+
+/* Pulse Animation */
+@keyframes pulse-animation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Notification Badge */
+.telegram-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .floating-telegram-wrapper {
+        bottom: 15px;
+        left: 15px;
+    }
+    
+    .floating-telegram-button {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+
+    .telegram-tooltip {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+
+    .telegram-badge {
+        width: 16px;
+        height: 16px;
+        font-size: 10px;
+    }
+}
+
 </style>
 
+
 <body class="two">
+      <!-- Floating Telegram Chat Button -->
+    <!-- Floating Telegram Chat Button -->
+<div class="floating-telegram-wrapper">
+  <a href="https://t.me/Harrypoppers18" target="_blank" class="floating-telegram-button">
+      <i class="bi bi-telegram"></i>
+      <span class="telegram-badge">1</span> <!-- Notification badge -->
+  </a>
+  <div class="telegram-tooltip">💬 Chat with us!</div>
+</div>
+
+
     <div class="preloader">
         <div class="loader"></div>
     </div>
