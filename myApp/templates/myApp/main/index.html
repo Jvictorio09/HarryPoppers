@@ -5,6 +5,8 @@
 
 {% block content %}
 {% load static %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
 <style>
 #services .smartwatch a {
     color: black;
@@ -372,26 +374,167 @@
     }
 }
 /* Fix Order Now Button */
-.order-now-button {
-    display: inline-block;
-    background: linear-gradient(135deg, #ff5a00, #cc4400);
-    color: white;
-    font-size: 16px;
+/* How to Buy Section */
+.how-to-buy-section {
+    background: #f9f9f9;
+    padding: 60px 20px;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Heading */
+.how-to-buy-heading {
+    font-size: 32px;
     font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 50px;
+    color: #222;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+/* Card Layout */
+.how-to-buy-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    min-height: 320px;
+}
+
+/* Hover Effect for Cards */
+.how-to-buy-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Icons */
+.how-to-buy-icon {
+    font-size: 40px;
+    color: #ff5a00;
+    background: white;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 auto 20px auto;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Icon Fix */
+.how-to-buy-icon i {
+    color: #ff5a00 !important; 
+    font-size: 36px;
+}
+
+/* Step Titles */
+.how-to-buy-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Step Descriptions */
+.how-to-buy-description {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .how-to-buy-card {
+        margin-bottom: 20px;
+    }
+    
+    .how-to-buy-heading {
+        font-size: 28px;
+    }
+}
+
+.order-links-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.order-links-heading {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Tagline Styling */
+.order-links-tagline {
+    font-size: 18px;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* General Button Styling */
+.order-links-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    max-width: 320px;
+    padding: 14px;
+    font-size: 18px;
+    font-weight: 600;
     text-decoration: none;
+    border-radius: 50px;
     transition: all 0.3s ease-in-out;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-    width: 90%; /* Ensures it fits nicely inside the product */
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    margin-bottom: 15px;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Hover Effect */
-.order-now-button:hover {
-    background: linear-gradient(135deg, #cc4400, #a83200);
+/* Button Hover Animation */
+.order-links-button:hover {
     transform: scale(1.05);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* Icons */
+.order-links-button i {
+    font-size: 22px;
+    margin-right: 10px;
+}
+
+/* Unique Button Colors */
+.order-links-telegram { background: linear-gradient(135deg, #0088cc, #005b99); }
+.order-links-shopee { background: linear-gradient(135deg, #ee4d2d, #b8321e); }
+.order-links-lazada { background: linear-gradient(135deg, #0074E8, #871db1); }
+.order-links-twitter { background: linear-gradient(135deg, #00080e, #282929); }
+.order-links-facebook { background: linear-gradient(135deg, #1877F2, #125ab6); }
+
+/* Hover Effects */
+.order-links-telegram:hover { background: linear-gradient(135deg, #005b99, #003f73); }
+.order-links-shopee:hover { background: linear-gradient(135deg, #b8321e, #8a2514); }
+.order-links-lazada:hover { background: linear-gradient(135deg, #005bb5, #00408c); }
+.order-links-twitter:hover { background: linear-gradient(135deg, #03111d, #282929); }
+.order-links-facebook:hover { background: linear-gradient(135deg, #125ab6, #0c3e89); }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .order-links-button {
+        font-size: 16px;
+        padding: 12px;
+        width: 90%;
+    }
+}
 
 </style>
   <!-- Hero Section -->
@@ -511,8 +654,88 @@
   </div>
 </section>
 
+<section id="how-to-buy" class="how-to-buy-section">
+  <div class="container">
+      <h2 class="how-to-buy-heading text-center">🛒 HOW TO BUY</h2>
+      
+      <div class="row justify-content-center">
+          <!-- Step 1: Order -->
+          <div class="col-md-4">
+              <div class="how-to-buy-card">
+                  <div class="how-to-buy-icon">
+                      <i class="bi bi-pencil-square"></i>
+                  </div>
+                  <h3 class="how-to-buy-title">Step 1: ORDER</h3>
+                  <p class="how-to-buy-description">
+                      Text or call us to place an order. We will send you an invoice with the total amount and payment details.
+                  </p>
+              </div>
+          </div>
 
+          <!-- Step 2: Pay -->
+          <div class="col-md-4">
+              <div class="how-to-buy-card">
+                  <div class="how-to-buy-icon">
+                      <i class="bi bi-credit-card"></i>
+                  </div>
+                  <h3 class="how-to-buy-title">Step 2: PAY</h3>
+                  <p class="how-to-buy-description">
+                      Make a bank deposit or mobile transfer via BPI/GCash/INSTAPAY. Then send us the deposit slip or a screenshot on Viber/Telegram.
+                  </p>
+              </div>
+          </div>
 
+          <!-- Step 3: Deliver -->
+          <div class="col-md-4">
+              <div class="how-to-buy-card">
+                  <div class="how-to-buy-icon">
+                      <i class="bi bi-truck"></i>
+                  </div>
+                  <h3 class="how-to-buy-title">Step 3: DELIVER</h3>
+                  <p class="how-to-buy-description">
+                      Once we confirm your payment, we'll ship your item via LBC/Grab/LalaMove/Angkas.
+                  </p>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
+
+<div class="container order-links-container text-center my-5">
+  <h1 class="order-links-heading mb-3">You may also order to us through these links:</h1>
+
+  <!-- Tagline Section -->
+  <p class="order-links-tagline">
+      🎉 <strong>Discreet packaging</strong> Get your poppers delivered safely. 🎉
+  </p>
+
+  <div class="d-flex flex-column align-items-center">
+      <!-- Telegram -->
+      <a href="https://t.me/Harrypoppers18 " target="_blank" class="order-links-button order-links-telegram">
+          <i class="bi bi-telegram"></i> Telegram @Harrypoppers18
+      </a>
+
+      <!-- Shopee -->
+      <a href="https://shopee.ph/shop/1306463897" target="_blank" class="order-links-button order-links-shopee">
+          <i class="bi bi-bag"></i> Shopee shop/1306463897
+      </a>
+
+      <!-- Lazada -->
+      <a href="https://www.lazada.com.ph/shop/harryscnt/?spm=a2o4l.pdp_revamp.seller.1.332d62b3W3mk1r&itemId=4596821506&channelSource=pdp" target="_blank" class="order-links-button order-links-lazada">
+          <i class="bi bi-twitter"></i> Lazada @harryscnt
+      </a>
+
+      <!-- Twitter/X -->
+      <a href="https://x.com/harrypoppers18" target="_blank" class="order-links-button order-links-twitter">
+          <i class="bi bi-x"></i> Twitter @harrypoppers18
+      </a>
+
+      <!-- Facebook -->
+      <a href="https://www.facebook.com/profile.php?id=61558563162192" target="_blank" class="order-links-button order-links-facebook">
+          <i class="bi bi-facebook"></i> Facebook
+      </a>
+  </div>
+</div>
 
 <section id="about" class="gap">
   <div class="container">
