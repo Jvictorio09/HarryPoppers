@@ -102,7 +102,7 @@
 
 /* Product image styling */
 .product-image {
-    max-width: 55%;
+    max-width: 35%;
     height: auto;
     border-radius: 8px;
     object-fit: cover;
@@ -371,6 +371,27 @@
         padding: 12px;
     }
 }
+/* Fix Order Now Button */
+.order-now-button {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff5a00, #cc4400);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    width: 90%; /* Ensures it fits nicely inside the product */
+}
+
+/* Hover Effect */
+.order-now-button:hover {
+    background: linear-gradient(135deg, #cc4400, #a83200);
+    transform: scale(1.05);
+}
+
 
 </style>
   <!-- Hero Section -->
@@ -443,7 +464,7 @@
 <section id="services">
   <div class="container">
       <div class="heading text-center">
-          <span>Authentic Poppers</span>
+          <span>Authentic Poppers - JANUARY 2025 STOCKS</span>
           <h2>Harry Poppers <span>Premium Quality</span> Fast Delivery Nationwide</h2>
       </div>
       <div class="row">
@@ -468,6 +489,12 @@
                               {% endif %}
                           </figure>
                           <div class="product-link">{{ service.name }} - ₱{{ service.price|floatformat:0 }}</div>
+                          <div class="text-center mt-3">
+                            <a href="https://www.harrypoppers.net/harrypoppers/checkout/" class="order-now-button">
+                                🛒 Order Now
+                            </a>
+                        </div>
+                        
                       </div>
                   </a>
               </div>
